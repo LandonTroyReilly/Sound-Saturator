@@ -1,5 +1,6 @@
 #pragma once
 
+#include "ChainOrder.h"
 #include "PrototypeConstants.h"
 
 #include <juce_audio_processors/juce_audio_processors.h>
@@ -26,6 +27,18 @@ inline constexpr const char* tapeBody = "tapeBody";
 inline constexpr const char* tapeReturn = "tapeReturn";
 inline constexpr const char* tapeBias = "tapeBias";
 inline constexpr const char* tapeBypass = "tapeBypass";
+inline constexpr const char* transformerDrive = "transformerDrive";
+inline constexpr const char* transformerWeight = "transformerWeight";
+inline constexpr const char* transformerBypass = "transformerBypass";
+inline constexpr const char* vcaInput = "vcaInput";
+inline constexpr const char* vcaOutput = "vcaOutput";
+inline constexpr const char* fluxInput = "fluxInput";
+inline constexpr const char* fluxOutput = "fluxOutput";
+inline constexpr const char* tapeInput = "tapeInput";
+inline constexpr const char* tapeOutput = "tapeOutput";
+inline constexpr const char* transformerInput = "transformerInput";
+inline constexpr const char* transformerOutput = "transformerOutput";
+inline constexpr const char* chainOrder = "chainOrder";
 inline constexpr const char* mix = "mix";
 inline constexpr const char* finalOutput = "finalOutput";
 inline constexpr const char* globalBypass = "globalBypass";
@@ -55,6 +68,18 @@ struct ParameterSnapshot
     float tapeReturnDb = 0.0f;
     int tapeBias = 1;
     bool tapeBypass = true;
+    float transformerDriveDb = 0.0f;
+    float transformerWeightDb = 3.0f;
+    bool transformerBypass = true;
+    float vcaInputDb = 0.0f;
+    float vcaOutputDb = 0.0f;
+    float fluxInputDb = 0.0f;
+    float fluxOutputDb = 0.0f;
+    float tapeInputDb = 0.0f;
+    float tapeOutputDb = 0.0f;
+    float transformerInputDb = 0.0f;
+    float transformerOutputDb = 0.0f;
+    int chainOrder = 0;
     float mixPercent = 100.0f;
     float finalOutputDb = 0.0f;
     bool globalBypass = false;
@@ -113,6 +138,29 @@ inline juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout
     addFloat (ids::tapeReturn, "Tape Return", -12.0f, 6.0f, 0.01f, 0.0f, "dB");
     addChoice (ids::tapeBias, "Tape Bias", { "Low", "Nominal", "High" }, 1);
     addBool (ids::tapeBypass, "Tape Bypass", true);
+
+    addFloat (ids::transformerDrive, "Transformer Drive", 0.0f, 18.0f, 0.01f, 0.0f, "dB");
+    addFloat (ids::transformerWeight, "Transformer Weight", 0.0f, 6.0f, 0.01f, 3.0f, "dB");
+    addBool (ids::transformerBypass, "Transformer Bypass", true);
+
+    addFloat (ids::vcaInput, "VCA Input", -18.0f, 18.0f, 0.01f, 0.0f, "dB");
+    addFloat (ids::vcaOutput, "VCA Output", -18.0f, 18.0f, 0.01f, 0.0f, "dB");
+    addFloat (ids::fluxInput, "Flux Input", -18.0f, 18.0f, 0.01f, 0.0f, "dB");
+    addFloat (ids::fluxOutput, "Flux Output", -18.0f, 18.0f, 0.01f, 0.0f, "dB");
+    addFloat (ids::tapeInput, "Tape Input", -18.0f, 18.0f, 0.01f, 0.0f, "dB");
+    addFloat (ids::tapeOutput, "Tape Output", -18.0f, 18.0f, 0.01f, 0.0f, "dB");
+    addFloat (ids::transformerInput, "Transformer Input", -18.0f, 18.0f, 0.01f, 0.0f, "dB");
+    addFloat (ids::transformerOutput, "Transformer Output", -18.0f, 18.0f, 0.01f, 0.0f, "dB");
+
+    StringArray orders;
+    for (int index = 0; index < kChainOrderCount; ++index)
+    {
+        int stages[kChainStageCount];
+        decodeChainOrder (index, stages);
+        orders.add (String (chainStageName (stages[0])) + " > " + chainStageName (stages[1]) + " > "
+                    + chainStageName (stages[2]) + " > " + chainStageName (stages[3]));
+    }
+    addChoice (ids::chainOrder, "Chain Order", orders, 0);
 
     addFloat (ids::mix, "Mix", 0.0f, 100.0f, 0.01f, 100.0f, "%");
     addFloat (ids::finalOutput, "Final Output", -36.0f, 12.0f, 0.01f, 0.0f, "dB");

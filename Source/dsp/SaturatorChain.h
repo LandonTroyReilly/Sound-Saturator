@@ -1,8 +1,10 @@
 #pragma once
 
+#include "ChainOrder.h"
 #include "FluxStage.h"
 #include "Parameters.h"
 #include "TapeStage.h"
+#include "TransformerStage.h"
 #include "VcaCompressor.h"
 
 #include <juce_dsp/juce_dsp.h>
@@ -93,6 +95,7 @@ public:
             path.vca.reset();
             path.flux.reset();
             path.tape.reset();
+            path.transformer.reset();
             path.pad.reset();
             if (path.oversampling != nullptr)
                 path.oversampling->reset();
@@ -168,7 +171,7 @@ public:
             (void) inputTrim.getNextValue();
             const float wetMix = std::clamp (mix.getNextValue(), 0.0f, 1.0f);
             const float outDb = outputGain.getNextValue();
-            const float outLin = dbToGain (outDb);
+            const float outLin = trimGain (outDb);
             const float id = std::clamp (identity.getNextValue(), 0.0f, 1.0f);
             const float bypass = std::clamp (globalBypass.getNextValue(), 0.0f, 1.0f);
             const float fade = fading ? std::clamp (qualityFade.getNextValue(), 0.0f, 1.0f) : 0.0f;
@@ -306,6 +309,7 @@ private:
         VcaCompressor vca;
         FluxStage flux;
         TapeStage tape;
+        TransformerStage transformer;
         IntegerDelay pad;
         int osLatency = 0;
         double osRate = 48000.0;
@@ -323,6 +327,17 @@ private:
         juce::SmoothedValue<float> tapeBody;
         juce::SmoothedValue<float> tapeReturn;
         juce::SmoothedValue<float> tapeBypass;
+        juce::SmoothedValue<float> transformerDrive;
+        juce::SmoothedValue<float> transformerWeight;
+        juce::SmoothedValue<float> transformerBypass;
+        juce::SmoothedValue<float> vcaInput;
+        juce::SmoothedValue<float> vcaOutput;
+        juce::SmoothedValue<float> fluxInput;
+        juce::SmoothedValue<float> fluxOutput;
+        juce::SmoothedValue<float> tapeInput;
+        juce::SmoothedValue<float> tapeOutput;
+        juce::SmoothedValue<float> transformerInput;
+        juce::SmoothedValue<float> transformerOutput;
 
         void prepareSmoothers (double rate)
         {
@@ -339,6 +354,17 @@ private:
             tapeBody.reset (rate, kSmoothSeconds);
             tapeReturn.reset (rate, kSmoothSeconds);
             tapeBypass.reset (rate, kCrossfadeSeconds);
+            transformerDrive.reset (rate, kSmoothSeconds);
+            transformerWeight.reset (rate, kSmoothSeconds);
+            transformerBypass.reset (rate, kCrossfadeSeconds);
+            vcaInput.reset (rate, kSmoothSeconds);
+            vcaOutput.reset (rate, kSmoothSeconds);
+            fluxInput.reset (rate, kSmoothSeconds);
+            fluxOutput.reset (rate, kSmoothSeconds);
+            tapeInput.reset (rate, kSmoothSeconds);
+            tapeOutput.reset (rate, kSmoothSeconds);
+            transformerInput.reset (rate, kSmoothSeconds);
+            transformerOutput.reset (rate, kSmoothSeconds);
         }
 
         void snap (const ParameterSnapshot& snapshot)
@@ -356,6 +382,17 @@ private:
             tapeBody.setCurrentAndTargetValue (snapshot.tapeBodyDb);
             tapeReturn.setCurrentAndTargetValue (snapshot.tapeReturnDb);
             tapeBypass.setCurrentAndTargetValue (snapshot.tapeBypass ? 1.0f : 0.0f);
+            transformerDrive.setCurrentAndTargetValue (snapshot.transformerDriveDb);
+            transformerWeight.setCurrentAndTargetValue (snapshot.transformerWeightDb);
+            transformerBypass.setCurrentAndTargetValue (snapshot.transformerBypass ? 1.0f : 0.0f);
+            vcaInput.setCurrentAndTargetValue (snapshot.vcaInputDb);
+            vcaOutput.setCurrentAndTargetValue (snapshot.vcaOutputDb);
+            fluxInput.setCurrentAndTargetValue (snapshot.fluxInputDb);
+            fluxOutput.setCurrentAndTargetValue (snapshot.fluxOutputDb);
+            tapeInput.setCurrentAndTargetValue (snapshot.tapeInputDb);
+            tapeOutput.setCurrentAndTargetValue (snapshot.tapeOutputDb);
+            transformerInput.setCurrentAndTargetValue (snapshot.transformerInputDb);
+            transformerOutput.setCurrentAndTargetValue (snapshot.transformerOutputDb);
         }
 
         void setTargets (const ParameterSnapshot& snapshot)
@@ -373,6 +410,17 @@ private:
             tapeBody.setTargetValue (snapshot.tapeBodyDb);
             tapeReturn.setTargetValue (snapshot.tapeReturnDb);
             tapeBypass.setTargetValue (snapshot.tapeBypass ? 1.0f : 0.0f);
+            transformerDrive.setTargetValue (snapshot.transformerDriveDb);
+            transformerWeight.setTargetValue (snapshot.transformerWeightDb);
+            transformerBypass.setTargetValue (snapshot.transformerBypass ? 1.0f : 0.0f);
+            vcaInput.setTargetValue (snapshot.vcaInputDb);
+            vcaOutput.setTargetValue (snapshot.vcaOutputDb);
+            fluxInput.setTargetValue (snapshot.fluxInputDb);
+            fluxOutput.setTargetValue (snapshot.fluxOutputDb);
+            tapeInput.setTargetValue (snapshot.tapeInputDb);
+            tapeOutput.setTargetValue (snapshot.tapeOutputDb);
+            transformerInput.setTargetValue (snapshot.transformerInputDb);
+            transformerOutput.setTargetValue (snapshot.transformerOutputDb);
         }
     };
 
@@ -391,6 +439,7 @@ private:
         path.vca.prepare (path.osRate, channels);
         path.flux.prepare (path.osRate, channels);
         path.tape.prepare (path.osRate, channels);
+        path.transformer.prepare (path.osRate, channels);
         path.prepareSmoothers (path.osRate);
         path.oversampling->reset();
     }
@@ -415,10 +464,20 @@ private:
     {
         const bool vcaNeutral = snapshot.vcaBypass
                              || (snapshot.vcaRatioIndex == 0 && std::abs (snapshot.vcaMakeupDb) <= 1.0e-3f);
+        const bool trimsNeutral = std::abs (snapshot.inputTrimDb) <= 1.0e-3f
+                                && std::abs (snapshot.vcaInputDb) <= 1.0e-3f
+                                && std::abs (snapshot.vcaOutputDb) <= 1.0e-3f
+                                && std::abs (snapshot.fluxInputDb) <= 1.0e-3f
+                                && std::abs (snapshot.fluxOutputDb) <= 1.0e-3f
+                                && std::abs (snapshot.tapeInputDb) <= 1.0e-3f
+                                && std::abs (snapshot.tapeOutputDb) <= 1.0e-3f
+                                && std::abs (snapshot.transformerInputDb) <= 1.0e-3f
+                                && std::abs (snapshot.transformerOutputDb) <= 1.0e-3f;
         return vcaNeutral
             && snapshot.fluxBypass
             && snapshot.tapeBypass
-            && std::abs (snapshot.inputTrimDb) <= 1.0e-3f;
+            && snapshot.transformerBypass
+            && trimsNeutral;
     }
 
     void snapTo (const ParameterSnapshot& snapshot)
@@ -462,7 +521,7 @@ private:
         auto trim = inputTrim;
         for (int i = 0; i < numSamples; ++i)
         {
-            const float gain = dbToGain (trim.getNextValue());
+            const float gain = trimGain (trim.getNextValue());
             for (int c = 0; c < channels; ++c)
                 dest.setSample (c, i, source.getSample (c, offset + i) * gain);
         }
@@ -495,7 +554,9 @@ private:
 
     void processOversampled (Path& path, juce::dsp::AudioBlock<float>& block, const ParameterSnapshot& snapshot)
     {
-        // Extension: colour rack, then the tube stage, before the VCA.
+        // Extension: colour rack, then the tube stage, can be inserted by chain order.
+        int order[kChainStageCount];
+        decodeChainOrder (snapshot.chainOrder, order);
         const int numSamples = (int) block.getNumSamples();
 
         for (int i = 0; i < numSamples; ++i)
@@ -513,7 +574,10 @@ private:
             vcaSettings.sidechainHpf = snapshot.vcaScHpf;
             vcaSettings.sidechainHpfHz = path.sidechainHz.getNextValue();
             vcaSettings.bypassAmount = path.vcaBypass.getNextValue();
-            path.vca.processSample (frame, channels, vcaSettings);
+
+            const float makeup = trimGain (path.makeup.getNextValue());
+            const float makeupMix = vcaSettings.bypassAmount;
+            const float makeupGain = makeupMix >= 1.0f ? 1.0f : (makeupMix <= 0.0f ? makeup : 1.0f + (1.0f - makeupMix) * (makeup - 1.0f));
 
             FluxSettings fluxSettings;
             fluxSettings.mode = snapshot.fluxMode;
@@ -522,30 +586,74 @@ private:
             fluxSettings.attackPreserve = path.attackPreserve.getNextValue();
             fluxSettings.bypassAmount = path.fluxBypass.getNextValue();
 
-            float preMakeup[kMaxChannels];
-            for (int c = 0; c < channels; ++c)
-                preMakeup[c] = frame[c];
-            path.flux.analyse (preMakeup, channels, fluxSettings);
-
-            const float makeupDb = path.makeup.getNextValue();
-            const float makeup = dbToGain (makeupDb);
-            const float makeupMix = vcaSettings.bypassAmount;
-            const float makeupGain = makeupMix >= 1.0f ? 1.0f : (makeupMix <= 0.0f ? makeup : 1.0f + (1.0f - makeupMix) * (makeup - 1.0f));
-
-            for (int c = 0; c < channels; ++c)
-                frame[c] *= makeupGain;
-
-            path.flux.shape (frame, channels, fluxSettings);
-
             TapeSettings tapeSettings;
             tapeSettings.driveDb = path.tapeDrive.getNextValue();
             tapeSettings.bodyDb = path.tapeBody.getNextValue();
             tapeSettings.returnDb = path.tapeReturn.getNextValue();
             tapeSettings.biasIndex = snapshot.tapeBias;
             tapeSettings.bypassAmount = path.tapeBypass.getNextValue();
-            path.tape.processSample (frame, channels, tapeSettings);
 
-            // Extension: output iron follows tape return, still inside this oversampled region.
+            TransformerSettings transformerSettings;
+            transformerSettings.driveDb = path.transformerDrive.getNextValue();
+            transformerSettings.weightDb = path.transformerWeight.getNextValue();
+            transformerSettings.bypassAmount = path.transformerBypass.getNextValue();
+
+            const float inGain[kChainStageCount] = {
+                trimGain (path.vcaInput.getNextValue()),
+                trimGain (path.fluxInput.getNextValue()),
+                trimGain (path.tapeInput.getNextValue()),
+                trimGain (path.transformerInput.getNextValue())
+            };
+            const float outGain[kChainStageCount] = {
+                trimGain (path.vcaOutput.getNextValue()),
+                trimGain (path.fluxOutput.getNextValue()),
+                trimGain (path.tapeOutput.getNextValue()),
+                trimGain (path.transformerOutput.getNextValue())
+            };
+
+            auto applyGain = [&] (float gain)
+            {
+                if (gain == 1.0f)
+                    return;
+                for (int c = 0; c < channels; ++c)
+                    frame[c] *= gain;
+            };
+
+            // Flux listens before VCA makeup when it is the next stage, matching the fixed chain.
+            bool fluxAnalysed = false;
+            for (int slot = 0; slot < kChainStageCount; ++slot)
+            {
+                const int stage = order[slot];
+                applyGain (inGain[stage]);
+
+                if (stage == stageVca)
+                {
+                    path.vca.processSample (frame, channels, vcaSettings);
+                    if (slot + 1 < kChainStageCount && order[slot + 1] == stageFlux)
+                    {
+                        path.flux.analyse (frame, channels, fluxSettings);
+                        fluxAnalysed = true;
+                    }
+                    applyGain (makeupGain);
+                }
+                else if (stage == stageFlux)
+                {
+                    if (! fluxAnalysed)
+                        path.flux.analyse (frame, channels, fluxSettings);
+                    path.flux.shape (frame, channels, fluxSettings);
+                    fluxAnalysed = true;
+                }
+                else if (stage == stageTape)
+                {
+                    path.tape.processSample (frame, channels, tapeSettings);
+                }
+                else
+                {
+                    path.transformer.processSample (frame, channels, transformerSettings);
+                }
+
+                applyGain (outGain[stage]);
+            }
 
             for (int c = 0; c < channels; ++c)
                 block.setSample ((size_t) c, (size_t) i, frame[c]);

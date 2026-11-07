@@ -145,7 +145,7 @@ public:
 
         const auto& profile = kBiasProfiles[bias];
         const float drive = std::max (1.0f, dbToGain (std::max (0.0f, settings.driveDb)));
-        const float returnGain = dbToGain (settings.returnDb);
+        const float returnGain = trimGain (settings.returnDb);
         const float bypass = std::clamp (settings.bypassAmount, 0.0f, 1.0f);
         const double scale = 1.0 / ((double) profile.a0 * (double) kField);
 

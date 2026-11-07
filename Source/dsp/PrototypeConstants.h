@@ -12,6 +12,7 @@ inline constexpr float kSmoothSeconds = 0.02f;
 inline constexpr float kCrossfadeSeconds = 0.01f;
 inline constexpr float kSilenceDb = -60.0f;
 inline constexpr float kTapeBodyHz = 80.0f;
+inline constexpr float kTransformerHz = 30.0f;
 inline constexpr float kTapeShelfSlope = 1.0f;
 
 // A -18 dBFS peak at 0 dB Tape Drive maps to |h| = kField * 10^(-18/20) ≈ 0.25.
@@ -62,6 +63,13 @@ inline constexpr TapeProfile kBiasProfiles[3] = {
 inline float dbToGain (float db) noexcept
 {
     return std::pow (10.0f, db * 0.05f);
+}
+
+// Float parameter steps are 0.01 dB. A stored 0 dB default round-trips a fraction
+// of a micro-decibel away from zero, which would scale an otherwise unity trim.
+inline float trimGain (float db) noexcept
+{
+    return std::abs (db) < 0.005f ? 1.0f : dbToGain (db);
 }
 
 inline double dbToGain (double db) noexcept

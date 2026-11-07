@@ -1,5 +1,6 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
+#include "dsp/FactoryPresets.h"
 
 #include <cmath>
 
@@ -79,6 +80,81 @@ void SoundSaturatorAudioProcessor::processBlock (juce::AudioBuffer<float>& buffe
         setLatencySamples (latency);
 }
 
+int SoundSaturatorAudioProcessor::getNumPrograms()
+{
+    return kFactoryPresetCount;
+}
+
+int SoundSaturatorAudioProcessor::getCurrentProgram()
+{
+    return currentProgram;
+}
+
+void SoundSaturatorAudioProcessor::setCurrentProgram (int index)
+{
+    applyPreset (index);
+}
+
+const juce::String SoundSaturatorAudioProcessor::getProgramName (int index)
+{
+    if (index < 0 || index >= kFactoryPresetCount)
+        return {};
+
+    return kFactoryPresets[index].name;
+}
+
+void SoundSaturatorAudioProcessor::applyPreset (int index)
+{
+    if (index < 0 || index >= kFactoryPresetCount)
+        return;
+
+    currentProgram = index;
+    const FactoryPreset& preset = kFactoryPresets[index];
+
+    auto set = [this] (const char* parameterId, float raw)
+    {
+        if (auto* parameter = apvts.getParameter (parameterId))
+            parameter->setValueNotifyingHost (parameter->convertTo0to1 (raw));
+    };
+
+    set (ids::inputTrim, preset.inputTrimDb);
+    set (ids::vcaThreshold, preset.vcaThresholdDb);
+    set (ids::vcaRatio, (float) preset.vcaRatio);
+    set (ids::vcaTiming, (float) preset.vcaTiming);
+    set (ids::vcaKnee, preset.vcaKneeDb);
+    set (ids::vcaDetector, (float) preset.vcaDetector);
+    set (ids::vcaScHpf, preset.vcaScHpf ? 1.0f : 0.0f);
+    set (ids::vcaScHpfHz, preset.vcaScHpfHz);
+    set (ids::vcaMakeup, preset.vcaMakeupDb);
+    set (ids::vcaBypass, preset.vcaBypass ? 1.0f : 0.0f);
+    set (ids::fluxMode, (float) preset.fluxMode);
+    set (ids::fluxIntensity, preset.fluxIntensity);
+    set (ids::magneticDrive, preset.magneticDriveDb);
+    set (ids::attackPreserve, preset.attackPreserve);
+    set (ids::fluxBypass, preset.fluxBypass ? 1.0f : 0.0f);
+    set (ids::tapeDrive, preset.tapeDriveDb);
+    set (ids::tapeBody, preset.tapeBodyDb);
+    set (ids::tapeReturn, preset.tapeReturnDb);
+    set (ids::tapeBias, (float) preset.tapeBias);
+    set (ids::tapeBypass, preset.tapeBypass ? 1.0f : 0.0f);
+    set (ids::transformerDrive, preset.transformerDriveDb);
+    set (ids::transformerWeight, preset.transformerWeightDb);
+    set (ids::transformerBypass, preset.transformerBypass ? 1.0f : 0.0f);
+    set (ids::vcaInput, 0.0f);
+    set (ids::vcaOutput, 0.0f);
+    set (ids::fluxInput, 0.0f);
+    set (ids::fluxOutput, 0.0f);
+    set (ids::tapeInput, 0.0f);
+    set (ids::tapeOutput, 0.0f);
+    set (ids::transformerInput, 0.0f);
+    set (ids::transformerOutput, 0.0f);
+    set (ids::mix, preset.mixPercent);
+    set (ids::finalOutput, preset.finalOutputDb);
+    set (ids::globalBypass, 0.0f);
+
+    updateHostDisplay (juce::AudioProcessorListener::ChangeDetails().withProgramChanged (true));
+}
+
 juce::AudioProcessorEditor* SoundSaturatorAudioProcessor::createEditor()
 {
     return new SoundSaturatorAudioProcessorEditor (*this);
@@ -88,6 +164,7 @@ void SoundSaturatorAudioProcessor::getStateInformation (juce::MemoryBlock& destD
 {
     juce::ValueTree state = apvts.copyState();
     state.setProperty ("stateVersion", ids::stateVersion, nullptr);
+    state.setProperty ("program", currentProgram, nullptr);
 
     if (auto xml = state.createXml())
         copyXmlToBinary (*xml, destData);
@@ -100,7 +177,9 @@ void SoundSaturatorAudioProcessor::setStateInformation (const void* data, int si
         if (xml->hasTagName (apvts.state.getType()))
         {
             stateRestored = true;
-            apvts.replaceState (juce::ValueTree::fromXml (*xml));
+            auto restored = juce::ValueTree::fromXml (*xml);
+            apvts.replaceState (restored);
+            currentProgram = juce::jlimit (0, kFactoryPresetCount - 1, (int) restored.getProperty ("program", 0));
         }
     }
 }
@@ -128,6 +207,18 @@ ParameterSnapshot SoundSaturatorAudioProcessor::captureSnapshot() const
     snapshot.tapeReturnDb = readRaw (ids::tapeReturn);
     snapshot.tapeBias = readChoice (ids::tapeBias, 2);
     snapshot.tapeBypass = readFlag (ids::tapeBypass);
+    snapshot.transformerDriveDb = readRaw (ids::transformerDrive);
+    snapshot.transformerWeightDb = readRaw (ids::transformerWeight);
+    snapshot.transformerBypass = readFlag (ids::transformerBypass);
+    snapshot.vcaInputDb = readRaw (ids::vcaInput);
+    snapshot.vcaOutputDb = readRaw (ids::vcaOutput);
+    snapshot.fluxInputDb = readRaw (ids::fluxInput);
+    snapshot.fluxOutputDb = readRaw (ids::fluxOutput);
+    snapshot.tapeInputDb = readRaw (ids::tapeInput);
+    snapshot.tapeOutputDb = readRaw (ids::tapeOutput);
+    snapshot.transformerInputDb = readRaw (ids::transformerInput);
+    snapshot.transformerOutputDb = readRaw (ids::transformerOutput);
+    snapshot.chainOrder = readChoice (ids::chainOrder, kChainOrderCount - 1);
     snapshot.mixPercent = readRaw (ids::mix);
     snapshot.finalOutputDb = readRaw (ids::finalOutput);
     snapshot.globalBypass = readFlag (ids::globalBypass);

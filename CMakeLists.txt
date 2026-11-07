@@ -28,7 +28,8 @@ juce_add_plugin(SoundSaturator
     NEEDS_MIDI_OUTPUT FALSE
     IS_MIDI_EFFECT FALSE
     EDITOR_WANTS_KEYBOARD_FOCUS FALSE
-    COPY_PLUGIN_AFTER_BUILD FALSE
+    # After a successful build, copy the VST3 to ~/Library/Audio/Plug-Ins/VST3.
+    COPY_PLUGIN_AFTER_BUILD TRUE
     PLUGIN_MANUFACTURER_CODE SSat
     PLUGIN_CODE Ss01
     FORMATS VST3 Standalone

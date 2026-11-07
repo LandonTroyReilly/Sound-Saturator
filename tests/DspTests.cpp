@@ -1,11 +1,15 @@
 #include "PluginProcessor.h"
+#include "dsp/ChainOrder.h"
+#include "dsp/FactoryPresets.h"
 #include "dsp/FluxStage.h"
 #include "dsp/TapeStage.h"
+#include "dsp/TransformerStage.h"
 #include "dsp/VcaCompressor.h"
 
 #include <algorithm>
 #include <cmath>
 #include <cstdio>
+#include <cstring>
 #include <limits>
 #include <vector>
 
@@ -37,7 +41,7 @@ void expectNear (double actual, double expected, double tolerance, const char* f
 void setParam (SoundSaturatorAudioProcessor& processor, const char* id, float raw)
 {
     if (auto* parameter = processor.apvts.getParameter (id))
-        parameter->setValue (parameter->convertTo0to1 (raw));
+        parameter->setValueNotifyingHost (parameter->convertTo0to1 (raw));
     else
         EXPECT (false);
 }
@@ -339,6 +343,109 @@ void testTapeLevel()
     EXPECT (bodyDb > 2.5 && bodyDb < 3.2);
 }
 
+double harmonicShare (const std::vector<float>& output, float amplitude, float frequency, int sampleRate, int settle)
+{
+    double sineEnergy = 0.0;
+    double cosineEnergy = 0.0;
+    double crossSine = 0.0;
+    double crossCosine = 0.0;
+    double outEnergy = 0.0;
+    for (int i = settle; i < (int) output.size(); ++i)
+    {
+        const double phase = 2.0 * 3.14159265358979323846 * (double) frequency * (double) i / (double) sampleRate;
+        const double sine = (double) amplitude * std::sin (phase);
+        const double cosine = (double) amplitude * std::cos (phase);
+        const double y = (double) output[(size_t) i];
+        sineEnergy += sine * sine;
+        cosineEnergy += cosine * cosine;
+        crossSine += y * sine;
+        crossCosine += y * cosine;
+        outEnergy += y * y;
+    }
+    if (sineEnergy <= 0.0 || cosineEnergy <= 0.0 || outEnergy <= 1.0e-18)
+        return 0.0;
+
+    const double gainSine = crossSine / sineEnergy;
+    const double gainCosine = crossCosine / cosineEnergy;
+    const double residual = std::max (0.0, outEnergy - gainSine * gainSine * sineEnergy - gainCosine * gainCosine * cosineEnergy);
+    return std::sqrt (residual / outEnergy);
+}
+
+std::vector<float> renderTransformer (const TransformerSettings& settings, float amplitude, float frequency, int sampleRate, int samples)
+{
+    TransformerStage transformer;
+    transformer.prepare (sampleRate, 1);
+    std::vector<float> signal (samples);
+    for (int i = 0; i < samples; ++i)
+        signal[(size_t) i] = amplitude * std::sin (2.0f * 3.14159265f * frequency * (float) i / (float) sampleRate);
+    float* channels[] = { signal.data() };
+    transformer.processBlock (channels, 1, samples, settings);
+    return signal;
+}
+
+void testTransformer()
+{
+    const int sampleRate = 192000;
+    const int samples = (int) (0.5 * sampleRate);
+    const int settle = (int) (0.3 * sampleRate);
+
+    TransformerSettings bypassed;
+    bypassed.bypassAmount = 1.0f;
+    auto clean = renderTransformer (bypassed, 0.25f, 30.0f, sampleRate, 512);
+    for (int i = 0; i < 512; ++i)
+    {
+        const float expected = 0.25f * std::sin (2.0f * 3.14159265f * 30.0f * (float) i / (float) sampleRate);
+        EXPECT (clean[(size_t) i] == expected);
+    }
+
+    TransformerStage silent;
+    silent.prepare (sampleRate, 1);
+    TransformerSettings engaged;
+    engaged.bypassAmount = 0.0f;
+    engaged.weightDb = 3.0f;
+    engaged.driveDb = 0.0f;
+    for (int i = 0; i < 2000; ++i)
+    {
+        float frame[1] = { 0.0f };
+        silent.processSample (frame, 1, engaged);
+        EXPECT (std::abs (frame[0]) < 1.0e-5f);
+    }
+
+    auto low = renderTransformer (engaged, 0.01f, 30.0f, sampleRate, samples);
+    auto mid = renderTransformer (engaged, 0.01f, 1000.0f, sampleRate, samples);
+    std::vector<float> lowIn (samples), midIn (samples);
+    for (int i = 0; i < samples; ++i)
+    {
+        lowIn[(size_t) i] = 0.01f * std::sin (2.0f * 3.14159265f * 30.0f * (float) i / (float) sampleRate);
+        midIn[(size_t) i] = 0.01f * std::sin (2.0f * 3.14159265f * 1000.0f * (float) i / (float) sampleRate);
+    }
+    const double lowDb = 20.0 * std::log10 (rmsOf (low, settle) / rmsOf (lowIn, settle));
+    const double midDb = 20.0 * std::log10 (rmsOf (mid, settle) / rmsOf (midIn, settle));
+    std::printf ("Transformer bump  30 Hz %.3f dB, 1 kHz %.3f dB\n", lowDb, midDb);
+    EXPECT (lowDb > 2.2 && lowDb < 4.0);
+    EXPECT (std::abs (midDb) < 0.35);
+    EXPECT (lowDb > midDb + 2.0);
+
+    TransformerSettings flat = engaged;
+    flat.weightDb = 0.0f;
+    auto flatLow = renderTransformer (flat, 0.01f, 30.0f, sampleRate, samples);
+    const double flatDb = 20.0 * std::log10 (rmsOf (flatLow, settle) / rmsOf (lowIn, settle));
+    std::printf ("Transformer weight off at 30 Hz %.3f dB\n", flatDb);
+    EXPECT (lowDb > flatDb + 2.0);
+
+    TransformerSettings driven = engaged;
+    driven.driveDb = 12.0f;
+    const float hot = 0.5f;
+    auto bass = renderTransformer (driven, hot, 30.0f, sampleRate, samples);
+    auto treble = renderTransformer (driven, hot, 1000.0f, sampleRate, samples);
+    const double bassDistortion = harmonicShare (bass, hot, 30.0f, sampleRate, settle);
+    const double trebleDistortion = harmonicShare (treble, hot, 1000.0f, sampleRate, settle);
+    std::printf ("Transformer distortion  30 Hz %.4f, 1 kHz %.4f\n", bassDistortion, trebleDistortion);
+    EXPECT (bassDistortion > trebleDistortion * 2.0);
+    EXPECT (bassDistortion > 0.02);
+    EXPECT (std::isfinite (bassDistortion));
+}
+
 void processAll (SoundSaturatorAudioProcessor& processor, juce::AudioBuffer<float>& buffer)
 {
     juce::MidiBuffer midi;
@@ -360,6 +467,272 @@ bool delayMatches (const juce::AudioBuffer<float>& output, int delay, float impu
         }
     }
     return true;
+}
+
+int presetIndex (const char* name)
+{
+    for (int i = 0; i < kFactoryPresetCount; ++i)
+        if (std::strcmp (kFactoryPresets[i].name, name) == 0)
+            return i;
+    return -1;
+}
+
+float rawOf (SoundSaturatorAudioProcessor& processor, const char* id)
+{
+    return processor.apvts.getRawParameterValue (id)->load();
+}
+
+void testFactoryPresets()
+{
+    EXPECT (kFactoryPresetCount >= 60);
+    EXPECT (std::strcmp (kFactoryPresets[0].name, "Init") == 0);
+
+    for (int i = 0; i < kFactoryPresetCount; ++i)
+    {
+        EXPECT (kFactoryPresets[i].name[0] != '\0');
+        EXPECT (kFactoryPresets[i].group[0] != '\0');
+        for (int j = 0; j < i; ++j)
+            EXPECT (std::strcmp (kFactoryPresets[i].name, kFactoryPresets[j].name) != 0);
+
+        bool seenEarlier = false;
+        for (int j = 0; j < i; ++j)
+            if (std::strcmp (kFactoryPresets[i].group, kFactoryPresets[j].group) == 0)
+                seenEarlier = true;
+        if (seenEarlier)
+            EXPECT (std::strcmp (kFactoryPresets[i].group, kFactoryPresets[i - 1].group) == 0);
+    }
+
+    const int sp = presetIndex ("SP-1200 Master");
+    const int clean = presetIndex ("Clean Iron Master");
+    const int hats = presetIndex ("Soft Hats");
+    const int kick = presetIndex ("Boom Kick");
+    EXPECT (sp >= 0 && clean >= 0 && hats >= 0 && kick >= 0);
+    EXPECT (kFactoryPresets[sp].tapeDriveDb > kFactoryPresets[clean].tapeDriveDb + 6.0f);
+    EXPECT (kFactoryPresets[hats].transformerBypass);
+    EXPECT (! kFactoryPresets[kick].transformerBypass);
+    EXPECT (kFactoryPresets[kick].transformerWeightDb >= 5.0f);
+
+    int transformersOn = 0;
+    int transformersOff = 0;
+    SoundSaturatorAudioProcessor processor;
+    const int keptOrder = 18;
+    setParam (processor, ids::chainOrder, (float) keptOrder);
+    for (int i = 0; i < kFactoryPresetCount; ++i)
+    {
+        processor.setCurrentProgram (i);
+        EXPECT (processor.getCurrentProgram() == i);
+        EXPECT (processor.getProgramName (i) == juce::String (kFactoryPresets[i].name));
+
+        const FactoryPreset& preset = kFactoryPresets[i];
+        auto near = [&] (const char* id, float expected)
+        {
+            EXPECT (std::abs (rawOf (processor, id) - expected) <= 0.02f);
+        };
+
+        near (ids::inputTrim, preset.inputTrimDb);
+        near (ids::vcaThreshold, preset.vcaThresholdDb);
+        EXPECT ((int) std::lround (rawOf (processor, ids::vcaRatio)) == preset.vcaRatio);
+        EXPECT ((int) std::lround (rawOf (processor, ids::vcaTiming)) == preset.vcaTiming);
+        near (ids::vcaKnee, preset.vcaKneeDb);
+        EXPECT ((int) std::lround (rawOf (processor, ids::vcaDetector)) == preset.vcaDetector);
+        EXPECT ((rawOf (processor, ids::vcaScHpf) >= 0.5f) == preset.vcaScHpf);
+        near (ids::vcaScHpfHz, preset.vcaScHpfHz);
+        near (ids::vcaMakeup, preset.vcaMakeupDb);
+        EXPECT ((rawOf (processor, ids::vcaBypass) >= 0.5f) == preset.vcaBypass);
+        EXPECT ((int) std::lround (rawOf (processor, ids::fluxMode)) == preset.fluxMode);
+        near (ids::fluxIntensity, preset.fluxIntensity);
+        near (ids::magneticDrive, preset.magneticDriveDb);
+        near (ids::attackPreserve, preset.attackPreserve);
+        EXPECT ((rawOf (processor, ids::fluxBypass) >= 0.5f) == preset.fluxBypass);
+        near (ids::tapeDrive, preset.tapeDriveDb);
+        near (ids::tapeBody, preset.tapeBodyDb);
+        near (ids::tapeReturn, preset.tapeReturnDb);
+        EXPECT ((int) std::lround (rawOf (processor, ids::tapeBias)) == preset.tapeBias);
+        EXPECT ((rawOf (processor, ids::tapeBypass) >= 0.5f) == preset.tapeBypass);
+        near (ids::transformerDrive, preset.transformerDriveDb);
+        near (ids::transformerWeight, preset.transformerWeightDb);
+        EXPECT ((rawOf (processor, ids::transformerBypass) >= 0.5f) == preset.transformerBypass);
+        near (ids::mix, preset.mixPercent);
+        near (ids::finalOutput, preset.finalOutputDb);
+        EXPECT (rawOf (processor, ids::globalBypass) < 0.5f);
+        EXPECT ((int) std::lround (rawOf (processor, ids::chainOrder)) == keptOrder);
+        near (ids::vcaInput, 0.0f);
+        near (ids::vcaOutput, 0.0f);
+        near (ids::fluxInput, 0.0f);
+        near (ids::fluxOutput, 0.0f);
+        near (ids::tapeInput, 0.0f);
+        near (ids::tapeOutput, 0.0f);
+        near (ids::transformerInput, 0.0f);
+        near (ids::transformerOutput, 0.0f);
+
+        if (preset.transformerBypass)
+            ++transformersOff;
+        else
+            ++transformersOn;
+    }
+
+    EXPECT (transformersOn >= 40);
+    EXPECT (transformersOff >= 8);
+    std::printf ("Factory presets  %d  (%d transformer, %d dry of it)\n",
+                 kFactoryPresetCount, transformersOn, transformersOff);
+
+    SoundSaturatorAudioProcessor neutral;
+    neutral.prepareToPlay (48000.0, 256);
+    neutral.setCurrentProgram (0);
+    const int delay = neutral.getLatencySamples();
+    juce::AudioBuffer<float> impulse (2, delay + 8);
+    impulse.clear();
+    impulse.setSample (0, 0, 1.0f);
+    impulse.setSample (1, 0, 1.0f);
+    processAll (neutral, impulse);
+    EXPECT (delayMatches (impulse, delay, 1.0f));
+
+    SoundSaturatorAudioProcessor driven;
+    driven.prepareToPlay (48000.0, 256);
+    driven.setCurrentProgram (sp);
+    juce::AudioBuffer<float> tone (2, 4096);
+    juce::AudioBuffer<float> plain (2, 4096);
+    for (int i = 0; i < tone.getNumSamples(); ++i)
+    {
+        const float sample = 0.4f * std::sin (2.0f * juce::MathConstants<float>::pi * 80.0f * (float) i / 48000.0f);
+        tone.setSample (0, i, sample);
+        tone.setSample (1, i, sample);
+        plain.setSample (0, i, sample);
+        plain.setSample (1, i, sample);
+    }
+    SoundSaturatorAudioProcessor untouched;
+    untouched.prepareToPlay (48000.0, 256);
+    processAll (untouched, plain);
+    processAll (driven, tone);
+    double difference = 0.0;
+    for (int i = 1000; i < tone.getNumSamples(); ++i)
+    {
+        EXPECT (std::isfinite (tone.getSample (0, i)));
+        EXPECT (std::abs (tone.getSample (0, i)) < 8.0f);
+        difference += std::abs ((double) tone.getSample (0, i) - (double) plain.getSample (0, i));
+    }
+    EXPECT (difference > 1.0);
+
+    juce::MemoryBlock state;
+    driven.getStateInformation (state);
+    SoundSaturatorAudioProcessor recalled;
+    recalled.setStateInformation (state.getData(), (int) state.getSize());
+    EXPECT (recalled.getCurrentProgram() == sp);
+    EXPECT (std::abs (rawOf (recalled, ids::transformerDrive) - rawOf (driven, ids::transformerDrive)) <= 0.02f);
+    EXPECT (std::abs (rawOf (recalled, ids::tapeDrive) - rawOf (driven, ids::tapeDrive)) <= 0.02f);
+}
+
+double bufferEnergy (const juce::AudioBuffer<float>& buffer, int start)
+{
+    double sum = 0.0;
+    int count = 0;
+    for (int i = start; i < buffer.getNumSamples(); ++i)
+    {
+        const double sample = buffer.getSample (0, i);
+        sum += sample * sample;
+        ++count;
+    }
+    return std::sqrt (sum / (double) std::max (1, count));
+}
+
+void fillTone (juce::AudioBuffer<float>& buffer, float amplitude, float hz)
+{
+    for (int i = 0; i < buffer.getNumSamples(); ++i)
+    {
+        const float sample = amplitude * std::sin (2.0f * juce::MathConstants<float>::pi * hz * (float) i / 48000.0f);
+        buffer.setSample (0, i, sample);
+        buffer.setSample (1, i, sample);
+    }
+}
+
+void testChainOrder()
+{
+    bool seen[kChainOrderCount] = {};
+    for (int index = 0; index < kChainOrderCount; ++index)
+    {
+        int stages[kChainStageCount];
+        decodeChainOrder (index, stages);
+        EXPECT (encodeChainOrder (stages) == index);
+        bool used[kChainStageCount] = {};
+        for (int place = 0; place < kChainStageCount; ++place)
+        {
+            EXPECT (stages[place] >= 0 && stages[place] < kChainStageCount);
+            EXPECT (! used[stages[place]]);
+            used[stages[place]] = true;
+        }
+        EXPECT (! seen[index]);
+        seen[index] = true;
+    }
+
+    auto render = [] (int orderIndex, float transformerInputDb, juce::AudioBuffer<float>& buffer)
+    {
+        SoundSaturatorAudioProcessor processor;
+        processor.prepareToPlay (48000.0, 512);
+        setParam (processor, ids::vcaBypass, 0.0f);
+        setParam (processor, ids::vcaRatio, 4.0f);
+        setParam (processor, ids::vcaThreshold, -12.0f);
+        setParam (processor, ids::fluxBypass, 1.0f);
+        setParam (processor, ids::tapeBypass, 1.0f);
+        setParam (processor, ids::transformerBypass, 0.0f);
+        setParam (processor, ids::transformerDrive, 10.0f);
+        setParam (processor, ids::transformerWeight, 2.0f);
+        setParam (processor, ids::transformerInput, transformerInputDb);
+        setParam (processor, ids::chainOrder, (float) orderIndex);
+        processAll (processor, buffer);
+    };
+
+    int transformerFirst[kChainStageCount] = { stageTransformer, stageVca, stageFlux, stageTape };
+    const int first = encodeChainOrder (transformerFirst);
+    EXPECT (first != 0);
+
+    juce::AudioBuffer<float> forward (2, 4096);
+    juce::AudioBuffer<float> reversed (2, 4096);
+    fillTone (forward, 0.55f, 80.0f);
+    fillTone (reversed, 0.55f, 80.0f);
+    render (0, 0.0f, forward);
+    render (first, 0.0f, reversed);
+
+    double difference = 0.0;
+    for (int i = 1500; i < forward.getNumSamples(); ++i)
+    {
+        EXPECT (std::isfinite (forward.getSample (0, i)));
+        EXPECT (std::isfinite (reversed.getSample (0, i)));
+        difference += std::abs ((double) forward.getSample (0, i) - (double) reversed.getSample (0, i));
+    }
+    EXPECT (difference > 1.0);
+
+    auto renderTrim = [] (float transformerInputDb, juce::AudioBuffer<float>& buffer)
+    {
+        SoundSaturatorAudioProcessor processor;
+        processor.prepareToPlay (48000.0, 512);
+        setParam (processor, ids::vcaBypass, 1.0f);
+        setParam (processor, ids::fluxBypass, 1.0f);
+        setParam (processor, ids::tapeBypass, 1.0f);
+        setParam (processor, ids::transformerBypass, 1.0f);
+        setParam (processor, ids::transformerInput, transformerInputDb);
+        processAll (processor, buffer);
+    };
+
+    juce::AudioBuffer<float> unity (2, 4096);
+    juce::AudioBuffer<float> hotter (2, 4096);
+    fillTone (unity, 0.05f, 200.0f);
+    fillTone (hotter, 0.05f, 200.0f);
+    renderTrim (0.0f, unity);
+    renderTrim (12.0f, hotter);
+    const double unityLevel = bufferEnergy (unity, 1500);
+    const double hotLevel = bufferEnergy (hotter, 1500);
+    EXPECT (unityLevel > 1.0e-4);
+    EXPECT (hotLevel > unityLevel * 3.0);
+    EXPECT (hotLevel < unityLevel * 5.5);
+
+    SoundSaturatorAudioProcessor recalled;
+    recalled.prepareToPlay (48000.0, 128);
+    setParam (recalled, ids::chainOrder, (float) first);
+    juce::MemoryBlock state;
+    recalled.getStateInformation (state);
+    SoundSaturatorAudioProcessor restored;
+    restored.setStateInformation (state.getData(), (int) state.getSize());
+    EXPECT ((int) std::lround (rawOf (restored, ids::chainOrder)) == first);
 }
 
 void testProcessorLatency()
@@ -535,6 +908,9 @@ int main()
     testFluxWidths();
     testTapeState();
     testTapeLevel();
+    testTransformer();
+    testFactoryPresets();
+    testChainOrder();
     testProcessorLatency();
     testNeutralAndMix();
     testRobustness();
