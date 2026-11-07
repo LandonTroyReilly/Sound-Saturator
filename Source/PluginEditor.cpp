@@ -439,7 +439,7 @@ void SoundSaturatorAudioProcessorEditor::paint (juce::Graphics& graphics)
 
     graphics.setColour (kInk);
     graphics.setFont (juce::FontOptions (22.0f).withStyle ("Bold"));
-    graphics.drawText ("Sound Saturator", 22, 16, 280, 28, juce::Justification::centredLeft);
+    graphics.drawText ("Bombap", 22, 16, 280, 28, juce::Justification::centredLeft);
     graphics.setColour (kMuted);
     graphics.setFont (juce::FontOptions (12.5f));
     graphics.drawText ("Drag a title to move that stage. Each one keeps its own in and out.", 24, 44, 520, 16, juce::Justification::centredLeft);

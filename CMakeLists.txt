@@ -21,7 +21,7 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(JUCE)
 
 juce_add_plugin(SoundSaturator
-    COMPANY_NAME "Sound Saturator"
+    COMPANY_NAME "Bombap"
     BUNDLE_ID com.soundsaturator.prototype
     IS_SYNTH FALSE
     NEEDS_MIDI_INPUT FALSE
@@ -33,7 +33,7 @@ juce_add_plugin(SoundSaturator
     PLUGIN_MANUFACTURER_CODE SSat
     PLUGIN_CODE Ss01
     FORMATS VST3 Standalone
-    PRODUCT_NAME "Sound Saturator")
+    PRODUCT_NAME "Bombap")
 
 target_sources(SoundSaturator
     PRIVATE
