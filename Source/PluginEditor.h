@@ -27,12 +27,35 @@ public:
 
     void paint (juce::Graphics&) override;
     void resized() override;
-    void mouseMove (const juce::MouseEvent&) override;
-    void mouseDown (const juce::MouseEvent&) override;
-    void mouseDrag (const juce::MouseEvent&) override;
-    void mouseUp (const juce::MouseEvent&) override;
 
 private:
+    class ZoomSurface : public juce::Component
+    {
+    public:
+        explicit ZoomSurface (SoundSaturatorAudioProcessorEditor& owner) : editor (owner) {}
+
+        void paint (juce::Graphics&) override;
+        void resized() override;
+        void mouseMove (const juce::MouseEvent&) override;
+        void mouseDown (const juce::MouseEvent&) override;
+        void mouseDrag (const juce::MouseEvent&) override;
+        void mouseUp (const juce::MouseEvent&) override;
+
+    private:
+        SoundSaturatorAudioProcessorEditor& editor;
+    };
+
+    void paintInterface (juce::Graphics&);
+    void layoutInterface();
+    void handleMouseMove (const juce::MouseEvent&);
+    void handleMouseDown (const juce::MouseEvent&);
+    void handleMouseDrag (const juce::MouseEvent&);
+    void handleMouseUp (const juce::MouseEvent&);
+    void setZoomPercent (int percent);
+    void syncZoomButtons();
+
+    static constexpr int kDesignWidth = 1220;
+    static constexpr int kDesignHeight = 780;
     using SliderAttachment = juce::AudioProcessorValueTreeState::SliderAttachment;
     using ButtonAttachment = juce::AudioProcessorValueTreeState::ButtonAttachment;
 
@@ -61,9 +84,11 @@ private:
     juce::TooltipWindow tooltipWindow;
 
     SoundSaturatorAudioProcessor& processor;
+    ZoomSurface surface { *this };
 
     juce::ComboBox presetBox { "Preset" };
     juce::TextButton globalBypass { "Bypass" };
+    juce::TextButton zoomSmall { "50%" }, zoomMedium { "75%" }, zoomFull { "100%" };
 
     juce::Label inputTrimLabel, mixLabel, outputLabel;
     juce::Slider inputTrim, mix, output;

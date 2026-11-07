@@ -735,6 +735,24 @@ void testChainOrder()
     EXPECT ((int) std::lround (rawOf (restored, ids::chainOrder)) == first);
 }
 
+void testUiZoom()
+{
+    SoundSaturatorAudioProcessor processor;
+    EXPECT (processor.getUiZoomPercent() == 75);
+    processor.setUiZoomPercent (50);
+    juce::MemoryBlock state;
+    processor.getStateInformation (state);
+
+    SoundSaturatorAudioProcessor restored;
+    restored.setStateInformation (state.getData(), (int) state.getSize());
+    EXPECT (restored.getUiZoomPercent() == 50);
+
+    restored.setUiZoomPercent (20);
+    EXPECT (restored.getUiZoomPercent() == 50);
+    restored.setUiZoomPercent (160);
+    EXPECT (restored.getUiZoomPercent() == 100);
+}
+
 void testProcessorLatency()
 {
     SoundSaturatorAudioProcessor processor;
@@ -911,6 +929,7 @@ int main()
     testTransformer();
     testFactoryPresets();
     testChainOrder();
+    testUiZoom();
     testProcessorLatency();
     testNeutralAndMix();
     testRobustness();

@@ -35,6 +35,8 @@ public:
     void setStateInformation (const void* data, int sizeInBytes) override;
 
     OversamplingLatencies getOversamplingLatencies() const noexcept { return chain.latencies(); }
+    int getUiZoomPercent() const noexcept { return uiZoomPercent; }
+    void setUiZoomPercent (int percent) noexcept;
 
     juce::AudioProcessorValueTreeState apvts;
     std::atomic<float> gainReductionDb { 0.0f };
@@ -49,6 +51,7 @@ private:
 
     SaturatorChain chain;
     int currentProgram = 0;
+    int uiZoomPercent = 75;
     int preparedBlockSize = 512;
     bool prepared = false;
     bool stateRestored = false;

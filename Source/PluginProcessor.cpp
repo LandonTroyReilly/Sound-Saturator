@@ -155,6 +155,11 @@ void SoundSaturatorAudioProcessor::applyPreset (int index)
     updateHostDisplay (juce::AudioProcessorListener::ChangeDetails().withProgramChanged (true));
 }
 
+void SoundSaturatorAudioProcessor::setUiZoomPercent (int percent) noexcept
+{
+    uiZoomPercent = juce::jlimit (50, 100, percent);
+}
+
 juce::AudioProcessorEditor* SoundSaturatorAudioProcessor::createEditor()
 {
     return new SoundSaturatorAudioProcessorEditor (*this);
@@ -165,6 +170,7 @@ void SoundSaturatorAudioProcessor::getStateInformation (juce::MemoryBlock& destD
     juce::ValueTree state = apvts.copyState();
     state.setProperty ("stateVersion", ids::stateVersion, nullptr);
     state.setProperty ("program", currentProgram, nullptr);
+    state.setProperty ("uiZoom", uiZoomPercent, nullptr);
 
     if (auto xml = state.createXml())
         copyXmlToBinary (*xml, destData);
@@ -180,6 +186,7 @@ void SoundSaturatorAudioProcessor::setStateInformation (const void* data, int si
             auto restored = juce::ValueTree::fromXml (*xml);
             apvts.replaceState (restored);
             currentProgram = juce::jlimit (0, kFactoryPresetCount - 1, (int) restored.getProperty ("program", 0));
+            uiZoomPercent = juce::jlimit (50, 100, (int) restored.getProperty ("uiZoom", 75));
         }
     }
 }

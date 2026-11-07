@@ -158,6 +158,7 @@ SoundSaturatorAudioProcessorEditor::SoundSaturatorAudioProcessorEditor (SoundSat
 {
     setLookAndFeel (&lookAndFeel);
     setColour (juce::ResizableWindow::backgroundColourId, kBackground);
+    addAndMakeVisible (surface);
 
     juce::String lastGroup;
     for (int index = 0; index < kFactoryPresetCount; ++index)
@@ -182,14 +183,27 @@ SoundSaturatorAudioProcessorEditor::SoundSaturatorAudioProcessorEditor (SoundSat
             presetBox.setTooltip (kFactoryPresets[program].detail);
         syncFromParameters();
     };
-    addAndMakeVisible (presetBox);
+    surface.addAndMakeVisible (presetBox);
     presetBox.setSelectedId (processor.getCurrentProgram() + 1, juce::dontSendNotification);
 
     globalBypass.getProperties().set ("kind", "bypass");
     globalBypass.getProperties().set ("accent", kBrass.toString());
     globalBypass.setClickingTogglesState (true);
     globalBypass.setTooltip ("Hear the original signal");
-    addAndMakeVisible (globalBypass);
+    surface.addAndMakeVisible (globalBypass);
+
+    auto setupZoom = [this] (juce::TextButton& button, int percent)
+    {
+        button.getProperties().set ("kind", "mode");
+        button.getProperties().set ("accent", kBrass.toString());
+        button.setClickingTogglesState (false);
+        button.setTooltip ("Window size");
+        surface.addAndMakeVisible (button);
+        button.onClick = [this, percent] { setZoomPercent (percent); };
+    };
+    setupZoom (zoomSmall, 50);
+    setupZoom (zoomMedium, 75);
+    setupZoom (zoomFull, 100);
     buttonAttachments.push_back (std::make_unique<ButtonAttachment> (processor.apvts, ids::globalBypass, globalBypass));
 
     addKnob (inputTrim, inputTrimLabel, "Input", ids::inputTrim, kGold);
@@ -240,9 +254,12 @@ SoundSaturatorAudioProcessorEditor::SoundSaturatorAudioProcessorEditor (SoundSat
     transformerIn.setTooltip ("Level into the transformer");
     transformerOut.setTooltip ("Level leaving the transformer");
 
-    setSize (1220, 780);
     setResizable (true, true);
-    setResizeLimits (1080, 700, 1680, 1180);
+    setResizeLimits (kDesignWidth / 2, kDesignHeight / 2, kDesignWidth, kDesignHeight);
+    if (auto* bounds = getConstrainer())
+        bounds->setFixedAspectRatio ((double) kDesignWidth / (double) kDesignHeight);
+    const float savedZoom = processor.getUiZoomPercent() / 100.0f;
+    setSize (juce::roundToInt (kDesignWidth * savedZoom), juce::roundToInt (kDesignHeight * savedZoom));
     syncFromParameters();
     startTimerHz (30);
 }
@@ -259,13 +276,13 @@ void SoundSaturatorAudioProcessorEditor::addKnob (juce::Slider& slider, juce::La
     slider.setTextBoxStyle (juce::Slider::TextBoxBelow, false, 76, 18);
     slider.setColour (juce::Slider::rotarySliderFillColourId, accent);
     slider.setScrollWheelEnabled (true);
-    addAndMakeVisible (slider);
+    surface.addAndMakeVisible (slider);
 
     label.setText (text, juce::dontSendNotification);
     label.setJustificationType (juce::Justification::centred);
     label.setFont (juce::FontOptions (12.0f));
     label.setColour (juce::Label::textColourId, kMuted);
-    addAndMakeVisible (label);
+    surface.addAndMakeVisible (label);
 
     sliderAttachments.push_back (std::make_unique<SliderAttachment> (processor.apvts, parameterId, slider));
 }
@@ -276,7 +293,7 @@ void SoundSaturatorAudioProcessorEditor::addPower (juce::TextButton& button, con
     button.getProperties().set ("accent", accent.toString());
     button.setClickingTogglesState (true);
     button.setTooltip (tip);
-    addAndMakeVisible (button);
+    surface.addAndMakeVisible (button);
     button.onClick = [this, bypassId, &button]
     {
         setBool (bypassId, ! button.getToggleState());
@@ -289,7 +306,7 @@ void SoundSaturatorAudioProcessorEditor::addMode (juce::TextButton& button, int 
     button.getProperties().set ("accent", kBrass.toString());
     button.setClickingTogglesState (false);
     button.setTooltip ("Flux window");
-    addAndMakeVisible (button);
+    surface.addAndMakeVisible (button);
     button.onClick = [this, index]
     {
         setChoice (ids::fluxMode, index);
@@ -434,8 +451,63 @@ void SoundSaturatorAudioProcessorEditor::paintMeter (juce::Graphics& graphics, j
 void SoundSaturatorAudioProcessorEditor::paint (juce::Graphics& graphics)
 {
     graphics.fillAll (kBackground);
+}
+
+void SoundSaturatorAudioProcessorEditor::ZoomSurface::paint (juce::Graphics& graphics)
+{
+    editor.paintInterface (graphics);
+}
+
+void SoundSaturatorAudioProcessorEditor::ZoomSurface::resized()
+{
+    editor.layoutInterface();
+}
+
+void SoundSaturatorAudioProcessorEditor::ZoomSurface::mouseMove (const juce::MouseEvent& event)
+{
+    editor.handleMouseMove (event);
+}
+
+void SoundSaturatorAudioProcessorEditor::ZoomSurface::mouseDown (const juce::MouseEvent& event)
+{
+    editor.handleMouseDown (event);
+}
+
+void SoundSaturatorAudioProcessorEditor::ZoomSurface::mouseDrag (const juce::MouseEvent& event)
+{
+    editor.handleMouseDrag (event);
+}
+
+void SoundSaturatorAudioProcessorEditor::ZoomSurface::mouseUp (const juce::MouseEvent& event)
+{
+    editor.handleMouseUp (event);
+}
+
+void SoundSaturatorAudioProcessorEditor::setZoomPercent (int percent)
+{
+    processor.setUiZoomPercent (percent);
+    const float scale = processor.getUiZoomPercent() / 100.0f;
+    setSize (juce::roundToInt (kDesignWidth * scale), juce::roundToInt (kDesignHeight * scale));
+    syncZoomButtons();
+}
+
+void SoundSaturatorAudioProcessorEditor::syncZoomButtons()
+{
+    const int percent = processor.getUiZoomPercent();
+    auto mark = [percent] (juce::TextButton& button, int step)
+    {
+        button.setToggleState (std::abs (percent - step) <= 4, juce::dontSendNotification);
+    };
+    mark (zoomSmall, 50);
+    mark (zoomMedium, 75);
+    mark (zoomFull, 100);
+}
+
+void SoundSaturatorAudioProcessorEditor::paintInterface (juce::Graphics& graphics)
+{
+    graphics.fillAll (kBackground);
     graphics.setColour (kBrass);
-    graphics.fillRect (0, 0, getWidth(), 3);
+    graphics.fillRect (0, 0, kDesignWidth, 3);
 
     graphics.setColour (kInk);
     graphics.setFont (juce::FontOptions (22.0f).withStyle ("Bold"));
@@ -661,11 +733,26 @@ int SoundSaturatorAudioProcessorEditor::headerStage (juce::Point<int> position) 
 
 void SoundSaturatorAudioProcessorEditor::resized()
 {
-    auto area = getLocalBounds().reduced (18);
+    const float scale = juce::jlimit (0.5f, 1.0f, getWidth() / (float) kDesignWidth);
+    processor.setUiZoomPercent (juce::roundToInt (scale * 100.0f));
+    surface.setBounds (0, 0, kDesignWidth, kDesignHeight);
+    surface.setTransform (juce::AffineTransform::scale (scale));
+    syncZoomButtons();
+}
+
+void SoundSaturatorAudioProcessorEditor::layoutInterface()
+{
+    auto area = juce::Rectangle<int> (0, 0, kDesignWidth, kDesignHeight).reduced (18);
     auto header = area.removeFromTop (58);
     globalBypass.setBounds (header.removeFromRight (104).withSizeKeepingCentre (104, 32));
-    header.removeFromRight (12);
-    const int presetWidth = juce::jmin (360, header.getWidth() / 2);
+    header.removeFromRight (10);
+    auto zoomArea = header.removeFromRight (174).withSizeKeepingCentre (174, 32);
+    const int zoomWidth = zoomArea.getWidth() / 3;
+    zoomSmall.setBounds (zoomArea.removeFromLeft (zoomWidth).reduced (3, 0));
+    zoomMedium.setBounds (zoomArea.removeFromLeft (zoomWidth).reduced (3, 0));
+    zoomFull.setBounds (zoomArea.reduced (3, 0));
+    header.removeFromRight (10);
+    const int presetWidth = juce::jmin (300, header.getWidth() / 2);
     presetBox.setBounds (header.removeFromRight (presetWidth).withSizeKeepingCentre (presetWidth, 32));
 
     meterBounds = area.removeFromRight (132).reduced (4, 8);
@@ -681,13 +768,13 @@ void SoundSaturatorAudioProcessorEditor::resized()
     layoutChain();
 }
 
-void SoundSaturatorAudioProcessorEditor::mouseMove (const juce::MouseEvent& event)
+void SoundSaturatorAudioProcessorEditor::handleMouseMove (const juce::MouseEvent& event)
 {
-    setMouseCursor (headerStage (event.getPosition()) >= 0 ? juce::MouseCursor::DraggingHandCursor
-                                                           : juce::MouseCursor::NormalCursor);
+    surface.setMouseCursor (headerStage (event.getPosition()) >= 0 ? juce::MouseCursor::DraggingHandCursor
+                                                                  : juce::MouseCursor::NormalCursor);
 }
 
-void SoundSaturatorAudioProcessorEditor::mouseDown (const juce::MouseEvent& event)
+void SoundSaturatorAudioProcessorEditor::handleMouseDown (const juce::MouseEvent& event)
 {
     const int stage = headerStage (event.getPosition());
     if (stage < 0)
@@ -702,7 +789,7 @@ void SoundSaturatorAudioProcessorEditor::mouseDown (const juce::MouseEvent& even
     bringStageToFront (stage);
 }
 
-void SoundSaturatorAudioProcessorEditor::mouseDrag (const juce::MouseEvent& event)
+void SoundSaturatorAudioProcessorEditor::handleMouseDrag (const juce::MouseEvent& event)
 {
     if (draggingStage < 0)
         return;
@@ -722,7 +809,7 @@ void SoundSaturatorAudioProcessorEditor::mouseDrag (const juce::MouseEvent& even
     repaint();
 }
 
-void SoundSaturatorAudioProcessorEditor::mouseUp (const juce::MouseEvent&)
+void SoundSaturatorAudioProcessorEditor::handleMouseUp (const juce::MouseEvent&)
 {
     if (draggingStage < 0)
         return;
