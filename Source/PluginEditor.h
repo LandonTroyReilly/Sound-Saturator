@@ -88,6 +88,7 @@ private:
 
     juce::ComboBox presetBox { "Preset" };
     juce::TextButton globalBypass { "Bypass" };
+    juce::Label zoomLabel;
     juce::TextButton zoomSmall { "50%" }, zoomMedium { "75%" }, zoomFull { "100%" };
 
     juce::Label inputTrimLabel, mixLabel, outputLabel;

@@ -192,12 +192,18 @@ SoundSaturatorAudioProcessorEditor::SoundSaturatorAudioProcessorEditor (SoundSat
     globalBypass.setTooltip ("Hear the original signal");
     surface.addAndMakeVisible (globalBypass);
 
+    zoomLabel.setText ("Zoom", juce::dontSendNotification);
+    zoomLabel.setJustificationType (juce::Justification::centredRight);
+    zoomLabel.setFont (juce::FontOptions (12.5f));
+    zoomLabel.setColour (juce::Label::textColourId, kMuted);
+    surface.addAndMakeVisible (zoomLabel);
+
     auto setupZoom = [this] (juce::TextButton& button, int percent)
     {
         button.getProperties().set ("kind", "mode");
         button.getProperties().set ("accent", kBrass.toString());
         button.setClickingTogglesState (false);
-        button.setTooltip ("Window size");
+        button.setTooltip ("Zoom the window to " + juce::String (percent) + "%");
         surface.addAndMakeVisible (button);
         button.onClick = [this, percent] { setZoomPercent (percent); };
     };
@@ -289,14 +295,15 @@ void SoundSaturatorAudioProcessorEditor::addKnob (juce::Slider& slider, juce::La
 
 void SoundSaturatorAudioProcessorEditor::addPower (juce::TextButton& button, const char* bypassId, juce::Colour accent, const juce::String& tip)
 {
-    button.getProperties().set ("kind", "power");
+    button.setButtonText ("Bypass");
+    button.getProperties().set ("kind", "bypass");
     button.getProperties().set ("accent", accent.toString());
     button.setClickingTogglesState (true);
     button.setTooltip (tip);
     surface.addAndMakeVisible (button);
     button.onClick = [this, bypassId, &button]
     {
-        setBool (bypassId, ! button.getToggleState());
+        setBool (bypassId, button.getToggleState());
     };
 }
 
@@ -357,10 +364,10 @@ void SoundSaturatorAudioProcessorEditor::syncFromParameters()
     const bool fluxOn = ! flag (ids::fluxBypass);
     const bool tapeOn = ! flag (ids::tapeBypass);
     const bool transformerOn = ! flag (ids::transformerBypass);
-    syncToggle (vcaPower, vcaOn);
-    syncToggle (fluxPower, fluxOn);
-    syncToggle (tapePower, tapeOn);
-    syncToggle (transformerPower, transformerOn);
+    syncToggle (vcaPower, ! vcaOn);
+    syncToggle (fluxPower, ! fluxOn);
+    syncToggle (tapePower, ! tapeOn);
+    syncToggle (transformerPower, ! transformerOn);
 
     for (auto* control : { &threshold, &ratio, &makeup })
         control->setEnabled (vcaOn);
@@ -406,7 +413,7 @@ void SoundSaturatorAudioProcessorEditor::paintCard (juce::Graphics& graphics, ju
     graphics.drawRoundedRectangle (bounds.toFloat().reduced (0.5f), 14.0f, lifted ? 2.0f : 1.4f);
 
     auto header = bounds.reduced (16, 10).removeFromTop (40);
-    header.removeFromRight (34);
+    header.removeFromRight (100);
     auto titleArea = header.removeFromTop (20);
     auto grip = titleArea.removeFromLeft (14);
     graphics.setColour (kMuted);
@@ -511,7 +518,7 @@ void SoundSaturatorAudioProcessorEditor::paintInterface (juce::Graphics& graphic
 
     graphics.setColour (kInk);
     graphics.setFont (juce::FontOptions (22.0f).withStyle ("Bold"));
-    graphics.drawText ("Bombap", 22, 16, 280, 28, juce::Justification::centredLeft);
+    graphics.drawText ("Sound Saturator", 22, 16, 280, 28, juce::Justification::centredLeft);
     graphics.setColour (kMuted);
     graphics.setFont (juce::FontOptions (12.5f));
     graphics.drawText ("Drag a title to move that stage. Each one keeps its own in and out.", 24, 44, 520, 16, juce::Justification::centredLeft);
@@ -572,13 +579,13 @@ void SoundSaturatorAudioProcessorEditor::paintStage (juce::Graphics& graphics, i
 {
     const bool lifted = stage == draggingStage;
     if (stage == stageVca)
-        paintCard (graphics, stageBounds[stage], "VCA", routeText (stage), kGold, vcaPower.getToggleState(), lifted);
+        paintCard (graphics, stageBounds[stage], "VCA", routeText (stage), kGold, ! vcaPower.getToggleState(), lifted);
     else if (stage == stageFlux)
-        paintCard (graphics, stageBounds[stage], "Flux", routeText (stage), kBrass, fluxPower.getToggleState(), lifted);
+        paintCard (graphics, stageBounds[stage], "Flux", routeText (stage), kBrass, ! fluxPower.getToggleState(), lifted);
     else if (stage == stageTape)
-        paintCard (graphics, stageBounds[stage], "Tape", routeText (stage), kCopper, tapePower.getToggleState(), lifted);
+        paintCard (graphics, stageBounds[stage], "Tape", routeText (stage), kCopper, ! tapePower.getToggleState(), lifted);
     else
-        paintCard (graphics, stageBounds[stage], "Transformers", routeText (stage), kIron, transformerPower.getToggleState(), lifted);
+        paintCard (graphics, stageBounds[stage], "Transformers", routeText (stage), kIron, ! transformerPower.getToggleState(), lifted);
 }
 
 void SoundSaturatorAudioProcessorEditor::positionStage (int stage, juce::Rectangle<int> panel)
@@ -588,7 +595,7 @@ void SoundSaturatorAudioProcessorEditor::positionStage (int stage, juce::Rectang
                          std::initializer_list<juce::TextButton*> modes,
                          std::initializer_list<std::pair<juce::Label*, juce::Slider*>> levels)
     {
-        power.setBounds (bounds.getRight() - 42, bounds.getY() + 14, 26, 26);
+        power.setBounds (bounds.getRight() - 108, bounds.getY() + 12, 92, 26);
         auto inner = bounds.reduced (12, 12);
         inner.removeFromTop (46);
         if (modes.size() > 0)
@@ -718,7 +725,7 @@ int SoundSaturatorAudioProcessorEditor::headerStage (juce::Point<int> position) 
     auto hit = [position] (juce::Rectangle<int> bounds)
     {
         auto header = bounds.removeFromTop (48);
-        header.removeFromRight (48);
+        header.removeFromRight (116);
         return header.contains (position);
     };
 
@@ -747,6 +754,8 @@ void SoundSaturatorAudioProcessorEditor::layoutInterface()
     globalBypass.setBounds (header.removeFromRight (104).withSizeKeepingCentre (104, 32));
     header.removeFromRight (10);
     auto zoomArea = header.removeFromRight (174).withSizeKeepingCentre (174, 32);
+    header.removeFromRight (6);
+    zoomLabel.setBounds (header.removeFromRight (52).withSizeKeepingCentre (52, 32));
     const int zoomWidth = zoomArea.getWidth() / 3;
     zoomSmall.setBounds (zoomArea.removeFromLeft (zoomWidth).reduced (3, 0));
     zoomMedium.setBounds (zoomArea.removeFromLeft (zoomWidth).reduced (3, 0));
