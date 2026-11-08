@@ -76,3 +76,13 @@ target_link_libraries(SoundSaturatorTests
         juce::juce_dsp
         juce::juce_recommended_config_flags
         juce::juce_recommended_warning_flags)
+
+if(APPLE)
+    add_custom_target(apple-silicon-installer
+        COMMAND ${CMAKE_COMMAND} -E env SOUND_SATURATOR_SKIP_BUILD=1 /bin/bash
+                "${CMAKE_SOURCE_DIR}/installer/create-apple-silicon-pkg.sh"
+        DEPENDS SoundSaturator_VST3
+        WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
+        COMMENT "Package and install the Apple Silicon VST3"
+        VERBATIM)
+endif()
