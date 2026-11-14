@@ -15,8 +15,9 @@ inline constexpr float kTapeBodyHz = 80.0f;
 inline constexpr float kTransformerHz = 30.0f;
 inline constexpr float kTapeShelfSlope = 1.0f;
 
-// A -18 dBFS peak at 0 dB Tape Drive maps to |h| = kField * 10^(-18/20) ≈ 0.25.
-inline constexpr float kField = 2.0f;
+// Full scale at 0 dB Tape Drive maps to |h| = kField. 1.0 colours a hot mix.
+// 2.0 was slamming the same material. A -18 dBFS peak at 0 dB drive is about 0.13.
+inline constexpr float kField = 1.0f;
 
 struct VcaTiming
 {

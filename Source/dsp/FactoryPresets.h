@@ -46,7 +46,7 @@ inline constexpr FactoryPreset kFactoryPresets[] = {
       .vcaThresholdDb = -20.0f, .vcaRatio = 1, .vcaTiming = 6, .vcaKneeDb = 8.0f, .vcaDetector = 1,
       .vcaScHpf = true, .vcaScHpfHz = 80.0f, .vcaMakeupDb = 1.5f,
       .fluxMode = 2, .fluxIntensity = 0.35f, .magneticDriveDb = 2.0f, .attackPreserve = 0.25f, .fluxBypass = false,
-      .tapeDriveDb = 5.0f, .tapeBodyDb = 1.6f, .tapeBypass = false,
+      .tapeDriveDb = 1.0f, .tapeBodyDb = 1.6f, .tapeBypass = false,
       .transformerDriveDb = 3.0f, .transformerWeightDb = 4.0f, .transformerBypass = false,
       .finalOutputDb = -1.5f },
 
@@ -56,7 +56,7 @@ inline constexpr FactoryPreset kFactoryPresets[] = {
       .vcaThresholdDb = -22.0f, .vcaRatio = 1, .vcaTiming = 7, .vcaKneeDb = 10.0f, .vcaDetector = 1,
       .vcaScHpf = true, .vcaScHpfHz = 60.0f, .vcaMakeupDb = 1.0f,
       .fluxMode = 2, .fluxIntensity = 0.45f, .magneticDriveDb = 3.0f, .attackPreserve = 0.40f, .fluxBypass = false,
-      .tapeDriveDb = 8.0f, .tapeBodyDb = 2.4f, .tapeReturnDb = -1.0f, .tapeBias = 0, .tapeBypass = false,
+      .tapeDriveDb = 4.0f, .tapeBodyDb = 2.4f, .tapeReturnDb = 0.0f, .tapeBias = 0, .tapeBypass = false,
       .transformerDriveDb = 4.0f, .transformerWeightDb = 5.0f, .transformerBypass = false,
       .finalOutputDb = -2.0f },
 
@@ -66,7 +66,7 @@ inline constexpr FactoryPreset kFactoryPresets[] = {
       .vcaThresholdDb = -16.0f, .vcaRatio = 2, .vcaTiming = 2, .vcaKneeDb = 2.0f, .vcaDetector = 0,
       .vcaMakeupDb = 1.0f,
       .fluxMode = 1, .fluxIntensity = 0.70f, .magneticDriveDb = 8.0f, .attackPreserve = 0.15f, .fluxBypass = false,
-      .tapeDriveDb = 14.0f, .tapeBodyDb = 1.2f, .tapeReturnDb = -3.0f, .tapeBias = 0, .tapeBypass = false,
+      .tapeDriveDb = 10.0f, .tapeBodyDb = 1.2f, .tapeReturnDb = -1.0f, .tapeBias = 0, .tapeBypass = false,
       .transformerDriveDb = 12.0f, .transformerWeightDb = 4.5f, .transformerBypass = false,
       .finalOutputDb = -4.5f },
 
@@ -76,7 +76,7 @@ inline constexpr FactoryPreset kFactoryPresets[] = {
       .vcaThresholdDb = -18.0f, .vcaRatio = 1, .vcaTiming = 3, .vcaKneeDb = 4.0f,
       .vcaScHpf = true, .vcaScHpfHz = 100.0f, .vcaMakeupDb = 1.0f,
       .fluxMode = 1, .fluxIntensity = 0.40f, .magneticDriveDb = 4.0f, .attackPreserve = 0.55f, .fluxBypass = false,
-      .tapeDriveDb = 4.0f, .tapeBodyDb = 0.8f, .tapeBypass = false,
+      .tapeDriveDb = 0.0f, .tapeBodyDb = 0.8f, .tapeBypass = false,
       .transformerDriveDb = 5.0f, .transformerWeightDb = 2.5f, .transformerBypass = false,
       .finalOutputDb = -1.0f },
 
@@ -85,7 +85,7 @@ inline constexpr FactoryPreset kFactoryPresets[] = {
       .vcaThresholdDb = -24.0f, .vcaRatio = 1, .vcaTiming = 8, .vcaKneeDb = 12.0f, .vcaDetector = 1,
       .vcaScHpf = true, .vcaScHpfHz = 50.0f, .vcaMakeupDb = 2.0f,
       .fluxMode = 2, .fluxIntensity = 0.30f, .magneticDriveDb = 2.0f, .attackPreserve = 0.50f, .fluxBypass = false,
-      .tapeDriveDb = 6.0f, .tapeBodyDb = 3.0f, .tapeBypass = false,
+      .tapeDriveDb = 2.0f, .tapeBodyDb = 3.0f, .tapeBypass = false,
       .transformerDriveDb = 6.0f, .transformerWeightDb = 6.0f, .transformerBypass = false,
       .finalOutputDb = -2.0f },
 
@@ -95,7 +95,7 @@ inline constexpr FactoryPreset kFactoryPresets[] = {
       .vcaThresholdDb = -14.0f, .vcaRatio = 3, .vcaTiming = 4, .vcaKneeDb = 3.0f,
       .vcaMakeupDb = 0.0f,
       .fluxMode = 1, .fluxIntensity = 0.80f, .magneticDriveDb = 10.0f, .attackPreserve = 0.10f, .fluxBypass = false,
-      .tapeDriveDb = 16.0f, .tapeBodyDb = 1.5f, .tapeReturnDb = -4.0f, .tapeBias = 0, .tapeBypass = false,
+      .tapeDriveDb = 12.0f, .tapeBodyDb = 1.5f, .tapeReturnDb = -2.0f, .tapeBias = 0, .tapeBypass = false,
       .transformerDriveDb = 10.0f, .transformerWeightDb = 3.5f, .transformerBypass = false,
       .finalOutputDb = -5.0f },
 
@@ -104,7 +104,7 @@ inline constexpr FactoryPreset kFactoryPresets[] = {
       .vcaThresholdDb = -26.0f, .vcaRatio = 1, .vcaTiming = 7, .vcaKneeDb = 10.0f, .vcaDetector = 1,
       .vcaMakeupDb = 0.5f,
       .fluxMode = 2, .fluxIntensity = 0.25f, .magneticDriveDb = 1.0f, .attackPreserve = 0.45f, .fluxBypass = false,
-      .tapeDriveDb = 4.0f, .tapeBodyDb = 2.2f, .tapeBias = 2, .tapeBypass = false,
+      .tapeDriveDb = 0.0f, .tapeBodyDb = 2.2f, .tapeBias = 2, .tapeBypass = false,
       .transformerDriveDb = 2.0f, .transformerWeightDb = 5.5f, .transformerBypass = false,
       .mixPercent = 72.0f, .finalOutputDb = -0.5f },
 
@@ -113,7 +113,7 @@ inline constexpr FactoryPreset kFactoryPresets[] = {
       .vcaThresholdDb = -28.0f, .vcaRatio = 1, .vcaTiming = 6, .vcaKneeDb = 12.0f, .vcaDetector = 1,
       .vcaScHpf = true, .vcaScHpfHz = 70.0f, .vcaMakeupDb = 0.5f,
       .fluxMode = 2, .fluxIntensity = 0.20f, .magneticDriveDb = 1.0f, .attackPreserve = 0.60f, .fluxBypass = false,
-      .tapeDriveDb = 3.0f, .tapeBodyDb = 1.4f, .tapeBias = 2, .tapeBypass = false,
+      .tapeDriveDb = 0.0f, .tapeBodyDb = 1.4f, .tapeBias = 2, .tapeBypass = false,
       .transformerDriveDb = 1.5f, .transformerWeightDb = 3.5f, .transformerBypass = false,
       .finalOutputDb = -1.0f },
 
@@ -122,7 +122,7 @@ inline constexpr FactoryPreset kFactoryPresets[] = {
       .vcaThresholdDb = -14.0f, .vcaRatio = 2, .vcaTiming = 5, .vcaKneeDb = 6.0f, .vcaDetector = 1,
       .vcaScHpf = true, .vcaScHpfHz = 90.0f, .vcaMakeupDb = 3.0f,
       .fluxMode = 1, .fluxIntensity = 0.35f, .magneticDriveDb = 3.0f, .attackPreserve = 0.30f, .fluxBypass = false,
-      .tapeDriveDb = 6.0f, .tapeBodyDb = 1.2f, .tapeBypass = false,
+      .tapeDriveDb = 2.0f, .tapeBodyDb = 1.2f, .tapeBypass = false,
       .transformerDriveDb = 3.0f, .transformerWeightDb = 3.0f, .transformerBypass = false,
       .finalOutputDb = -1.5f },
 
@@ -132,7 +132,7 @@ inline constexpr FactoryPreset kFactoryPresets[] = {
       .vcaThresholdDb = -16.0f, .vcaRatio = 2, .vcaTiming = 5, .vcaKneeDb = 6.0f, .vcaDetector = 1,
       .vcaScHpf = true, .vcaScHpfHz = 40.0f, .vcaMakeupDb = 2.0f,
       .fluxMode = 2, .fluxIntensity = 0.40f, .magneticDriveDb = 4.0f, .attackPreserve = 0.35f, .fluxBypass = false,
-      .tapeDriveDb = 7.0f, .tapeBodyDb = 3.0f, .tapeBypass = false,
+      .tapeDriveDb = 3.0f, .tapeBodyDb = 3.0f, .tapeBypass = false,
       .transformerDriveDb = 8.0f, .transformerWeightDb = 6.0f, .transformerBypass = false,
       .finalOutputDb = -3.0f },
 
@@ -141,7 +141,7 @@ inline constexpr FactoryPreset kFactoryPresets[] = {
       .vcaThresholdDb = -30.0f, .vcaRatio = 1, .vcaTiming = 8, .vcaKneeDb = 12.0f, .vcaDetector = 1,
       .vcaMakeupDb = 0.0f,
       .fluxMode = 0, .fluxIntensity = 0.20f, .magneticDriveDb = 1.0f, .attackPreserve = 0.70f, .fluxBypass = false,
-      .tapeDriveDb = 2.0f, .tapeBodyDb = 1.0f, .tapeBias = 2, .tapeBypass = false,
+      .tapeDriveDb = 0.0f, .tapeBodyDb = 1.0f, .tapeBias = 2, .tapeBypass = false,
       .transformerDriveDb = 1.0f, .transformerWeightDb = 2.0f, .transformerBypass = false,
       .mixPercent = 78.0f },
 
@@ -150,7 +150,7 @@ inline constexpr FactoryPreset kFactoryPresets[] = {
       .inputTrimDb = 3.0f,
       .vcaThresholdDb = -12.0f, .vcaRatio = 2, .vcaTiming = 4, .vcaKneeDb = 4.0f,
       .vcaScHpf = true, .vcaScHpfHz = 80.0f, .vcaMakeupDb = 1.0f,
-      .tapeDriveDb = 16.0f, .tapeBodyDb = 2.2f, .tapeReturnDb = -4.0f, .tapeBias = 0, .tapeBypass = false,
+      .tapeDriveDb = 12.0f, .tapeBodyDb = 2.2f, .tapeReturnDb = -2.0f, .tapeBias = 0, .tapeBypass = false,
       .transformerDriveDb = 5.0f, .transformerWeightDb = 4.0f, .transformerBypass = false,
       .finalOutputDb = -3.0f },
 
@@ -167,7 +167,7 @@ inline constexpr FactoryPreset kFactoryPresets[] = {
       .vcaThresholdDb = -12.0f, .vcaRatio = 3, .vcaTiming = 3, .vcaKneeDb = 2.0f,
       .vcaMakeupDb = 2.0f,
       .fluxMode = 2, .fluxIntensity = 0.60f, .magneticDriveDb = 6.0f, .attackPreserve = 0.20f, .fluxBypass = false,
-      .tapeDriveDb = 12.0f, .tapeBodyDb = 2.0f, .tapeReturnDb = -2.0f, .tapeBias = 0, .tapeBypass = false,
+      .tapeDriveDb = 8.0f, .tapeBodyDb = 2.0f, .tapeReturnDb = 0.0f, .tapeBias = 0, .tapeBypass = false,
       .transformerDriveDb = 9.0f, .transformerWeightDb = 5.0f, .transformerBypass = false,
       .mixPercent = 42.0f, .finalOutputDb = -1.0f },
 
@@ -175,7 +175,7 @@ inline constexpr FactoryPreset kFactoryPresets[] = {
       .detail = "For a beat that is already loud. A kiss of tape and a small bump.",
       .vcaThresholdDb = -26.0f, .vcaRatio = 1, .vcaTiming = 7, .vcaKneeDb = 10.0f, .vcaDetector = 1,
       .vcaScHpf = true, .vcaScHpfHz = 120.0f,
-      .tapeDriveDb = 1.5f, .tapeBodyDb = 0.6f, .tapeBias = 2, .tapeBypass = false,
+      .tapeDriveDb = 0.0f, .tapeBodyDb = 0.6f, .tapeBias = 2, .tapeBypass = false,
       .transformerDriveDb = 0.5f, .transformerWeightDb = 2.5f, .transformerBypass = false },
 
     { .name = "Bus Gentle", .group = "Masters",
@@ -183,7 +183,7 @@ inline constexpr FactoryPreset kFactoryPresets[] = {
       .vcaThresholdDb = -24.0f, .vcaRatio = 1, .vcaTiming = 6, .vcaKneeDb = 8.0f, .vcaDetector = 1,
       .vcaScHpf = true, .vcaScHpfHz = 90.0f, .vcaMakeupDb = 0.5f,
       .fluxMode = 1, .fluxIntensity = 0.15f, .magneticDriveDb = 1.0f, .attackPreserve = 0.40f, .fluxBypass = false,
-      .tapeDriveDb = 2.0f, .tapeBodyDb = 0.8f, .tapeBias = 2, .tapeBypass = false,
+      .tapeDriveDb = 0.0f, .tapeBodyDb = 0.8f, .tapeBias = 2, .tapeBypass = false,
       .transformerDriveDb = 1.0f, .transformerWeightDb = 2.5f, .transformerBypass = false,
       .finalOutputDb = -0.5f },
 
@@ -192,8 +192,8 @@ inline constexpr FactoryPreset kFactoryPresets[] = {
       .vcaThresholdDb = -16.0f, .vcaRatio = 2, .vcaTiming = 3, .vcaKneeDb = 4.0f,
       .vcaScHpf = true, .vcaScHpfHz = 100.0f, .vcaMakeupDb = 2.0f,
       .fluxMode = 1, .fluxIntensity = 0.40f, .magneticDriveDb = 3.0f, .attackPreserve = 0.45f, .fluxBypass = false,
-      .tapeDriveDb = 4.0f, .tapeBodyDb = 1.2f, .tapeBypass = false,
-      .transformerDriveDb = 4.0f, .transformerWeightDb = 4.0f, .transformerBypass = false,
+      .tapeDriveDb = 0.0f, .tapeBodyDb = 1.2f, .tapeBypass = false,
+      .transformerDriveDb = 8.0f, .transformerWeightDb = 4.0f, .transformerBypass = false,
       .finalOutputDb = -1.5f },
 
     { .name = "Drum Bus Crush", .group = "Drums",
@@ -202,7 +202,7 @@ inline constexpr FactoryPreset kFactoryPresets[] = {
       .vcaThresholdDb = -12.0f, .vcaRatio = 3, .vcaTiming = 2, .vcaKneeDb = 2.0f,
       .vcaScHpf = true, .vcaScHpfHz = 90.0f, .vcaMakeupDb = 1.0f,
       .fluxMode = 1, .fluxIntensity = 0.65f, .magneticDriveDb = 7.0f, .attackPreserve = 0.20f, .fluxBypass = false,
-      .tapeDriveDb = 12.0f, .tapeBodyDb = 1.5f, .tapeReturnDb = -2.5f, .tapeBias = 0, .tapeBypass = false,
+      .tapeDriveDb = 8.0f, .tapeBodyDb = 1.5f, .tapeReturnDb = -0.5f, .tapeBias = 0, .tapeBypass = false,
       .transformerDriveDb = 10.0f, .transformerWeightDb = 4.5f, .transformerBypass = false,
       .finalOutputDb = -4.0f },
 
@@ -212,7 +212,7 @@ inline constexpr FactoryPreset kFactoryPresets[] = {
       .vcaThresholdDb = -10.0f, .vcaRatio = 4, .vcaTiming = 1, .vcaKneeDb = 1.0f,
       .vcaMakeupDb = 3.0f,
       .fluxMode = 2, .fluxIntensity = 0.75f, .magneticDriveDb = 8.0f, .attackPreserve = 0.15f, .fluxBypass = false,
-      .tapeDriveDb = 14.0f, .tapeBodyDb = 2.0f, .tapeReturnDb = -3.0f, .tapeBias = 0, .tapeBypass = false,
+      .tapeDriveDb = 10.0f, .tapeBodyDb = 2.0f, .tapeReturnDb = -1.0f, .tapeBias = 0, .tapeBypass = false,
       .transformerDriveDb = 8.0f, .transformerWeightDb = 4.0f, .transformerBypass = false,
       .mixPercent = 35.0f, .finalOutputDb = -1.0f },
 
@@ -221,8 +221,8 @@ inline constexpr FactoryPreset kFactoryPresets[] = {
       .vcaThresholdDb = -20.0f, .vcaRatio = 1, .vcaTiming = 7, .vcaKneeDb = 8.0f, .vcaDetector = 1,
       .vcaScHpf = true, .vcaScHpfHz = 70.0f, .vcaMakeupDb = 1.5f,
       .fluxMode = 2, .fluxIntensity = 0.30f, .magneticDriveDb = 2.0f, .attackPreserve = 0.35f, .fluxBypass = false,
-      .tapeDriveDb = 5.0f, .tapeBodyDb = 2.4f, .tapeBypass = false,
-      .transformerDriveDb = 3.0f, .transformerWeightDb = 5.0f, .transformerBypass = false,
+      .tapeDriveDb = 1.0f, .tapeBodyDb = 2.4f, .tapeBypass = false,
+      .transformerDriveDb = 7.0f, .transformerWeightDb = 5.0f, .transformerBypass = false,
       .finalOutputDb = -1.5f },
 
     { .name = "Dry Drum Bus", .group = "Drums",
@@ -230,7 +230,7 @@ inline constexpr FactoryPreset kFactoryPresets[] = {
       .vcaThresholdDb = -14.0f, .vcaRatio = 1, .vcaTiming = 1, .vcaKneeDb = 3.0f,
       .vcaScHpf = true, .vcaScHpfHz = 140.0f, .vcaMakeupDb = 1.0f,
       .fluxMode = 0, .fluxIntensity = 0.55f, .magneticDriveDb = 4.0f, .attackPreserve = 0.65f, .fluxBypass = false,
-      .tapeDriveDb = 3.0f, .tapeBodyDb = 0.4f, .tapeBypass = false,
+      .tapeDriveDb = 0.0f, .tapeBodyDb = 0.4f, .tapeBypass = false,
       .transformerDriveDb = 3.0f, .transformerWeightDb = 2.0f, .transformerBypass = false,
       .finalOutputDb = -1.0f },
 
@@ -238,7 +238,7 @@ inline constexpr FactoryPreset kFactoryPresets[] = {
       .detail = "Full 30 Hz weight, tape body, and enough drive to thump.",
       .inputTrimDb = 2.0f, .vcaBypass = true,
       .fluxMode = 2, .fluxIntensity = 0.20f, .magneticDriveDb = 2.0f, .attackPreserve = 0.50f, .fluxBypass = false,
-      .tapeDriveDb = 4.0f, .tapeBodyDb = 3.0f, .tapeBypass = false,
+      .tapeDriveDb = 0.0f, .tapeBodyDb = 3.0f, .tapeBypass = false,
       .transformerDriveDb = 8.0f, .transformerWeightDb = 6.0f, .transformerBypass = false,
       .finalOutputDb = -3.0f },
 
@@ -248,7 +248,7 @@ inline constexpr FactoryPreset kFactoryPresets[] = {
       .vcaThresholdDb = -12.0f, .vcaRatio = 1, .vcaTiming = 0, .vcaKneeDb = 2.0f,
       .vcaScHpf = true, .vcaScHpfHz = 150.0f, .vcaMakeupDb = 0.5f,
       .fluxMode = 0, .fluxIntensity = 0.60f, .magneticDriveDb = 5.0f, .attackPreserve = 0.80f, .fluxBypass = false,
-      .tapeDriveDb = 6.0f, .tapeBodyDb = 1.2f, .tapeBypass = false,
+      .tapeDriveDb = 2.0f, .tapeBodyDb = 1.2f, .tapeBypass = false,
       .transformerDriveDb = 12.0f, .transformerWeightDb = 4.0f, .transformerBypass = false,
       .finalOutputDb = -3.0f },
 
@@ -256,22 +256,22 @@ inline constexpr FactoryPreset kFactoryPresets[] = {
       .detail = "Low-frequency harmonics and a bounded sub. No compressor on the hit.",
       .inputTrimDb = 1.5f, .vcaBypass = true,
       .fluxMode = 2, .fluxIntensity = 0.25f, .magneticDriveDb = 3.0f, .attackPreserve = 0.40f, .fluxBypass = false,
-      .tapeDriveDb = 5.0f, .tapeBodyDb = 3.0f, .tapeBias = 0, .tapeBypass = false,
+      .tapeDriveDb = 1.0f, .tapeBodyDb = 3.0f, .tapeBias = 0, .tapeBypass = false,
       .transformerDriveDb = 9.0f, .transformerWeightDb = 6.0f, .transformerBypass = false,
       .finalOutputDb = -3.0f },
 
     { .name = "Sub Kick", .group = "Drums",
       .detail = "Clean weight. Transformer bump and tape body, almost no grit.",
       .vcaBypass = true,
-      .tapeDriveDb = 1.0f, .tapeBodyDb = 2.0f, .tapeBias = 2, .tapeBypass = false,
-      .transformerDriveDb = 2.0f, .transformerWeightDb = 6.0f, .transformerBypass = false,
+      .tapeDriveDb = 0.0f, .tapeBodyDb = 2.0f, .tapeBias = 2, .tapeBypass = false,
+      .transformerDriveDb = 6.0f, .transformerWeightDb = 6.0f, .transformerBypass = false,
       .finalOutputDb = -1.5f },
 
     { .name = "SP Kick", .group = "Drums",
       .detail = "Distorted kick. Input slammed through low-bias tape and the core.",
       .inputTrimDb = 8.0f, .vcaBypass = true,
       .fluxMode = 1, .fluxIntensity = 0.50f, .magneticDriveDb = 8.0f, .attackPreserve = 0.10f, .fluxBypass = false,
-      .tapeDriveDb = 16.0f, .tapeBodyDb = 1.5f, .tapeReturnDb = -5.0f, .tapeBias = 0, .tapeBypass = false,
+      .tapeDriveDb = 12.0f, .tapeBodyDb = 1.5f, .tapeReturnDb = -3.0f, .tapeBias = 0, .tapeBypass = false,
       .transformerDriveDb = 14.0f, .transformerWeightDb = 4.0f, .transformerBypass = false,
       .finalOutputDb = -6.0f },
 
@@ -281,8 +281,8 @@ inline constexpr FactoryPreset kFactoryPresets[] = {
       .vcaThresholdDb = -14.0f, .vcaRatio = 2, .vcaTiming = 0, .vcaKneeDb = 2.0f,
       .vcaScHpf = true, .vcaScHpfHz = 120.0f, .vcaMakeupDb = 1.5f,
       .fluxMode = 0, .fluxIntensity = 0.70f, .magneticDriveDb = 6.0f, .attackPreserve = 0.70f, .fluxBypass = false,
-      .tapeDriveDb = 4.0f, .tapeBodyDb = 1.0f, .tapeBypass = false,
-      .transformerDriveDb = 4.0f, .transformerWeightDb = 3.0f, .transformerBypass = false,
+      .tapeDriveDb = 0.0f, .tapeBodyDb = 1.0f, .tapeBypass = false,
+      .transformerDriveDb = 8.0f, .transformerWeightDb = 3.0f, .transformerBypass = false,
       .finalOutputDb = -1.5f },
 
     { .name = "808 Sustain", .group = "Drums",
@@ -290,7 +290,7 @@ inline constexpr FactoryPreset kFactoryPresets[] = {
       .vcaThresholdDb = -18.0f, .vcaRatio = 1, .vcaTiming = 8, .vcaKneeDb = 8.0f, .vcaDetector = 1,
       .vcaMakeupDb = 1.0f,
       .fluxMode = 2, .fluxIntensity = 0.30f, .magneticDriveDb = 3.0f, .attackPreserve = 0.25f, .fluxBypass = false,
-      .tapeDriveDb = 4.0f, .tapeBodyDb = 2.0f, .tapeBypass = false,
+      .tapeDriveDb = 0.0f, .tapeBodyDb = 2.0f, .tapeBypass = false,
       .transformerDriveDb = 6.0f, .transformerWeightDb = 5.0f, .transformerBypass = false,
       .finalOutputDb = -2.0f },
 
@@ -300,7 +300,7 @@ inline constexpr FactoryPreset kFactoryPresets[] = {
       .vcaThresholdDb = -12.0f, .vcaRatio = 2, .vcaTiming = 2, .vcaKneeDb = 3.0f,
       .vcaMakeupDb = 1.0f,
       .fluxMode = 0, .fluxIntensity = 0.45f, .magneticDriveDb = 6.0f, .attackPreserve = 0.75f, .fluxBypass = false,
-      .tapeDriveDb = 7.0f, .tapeBodyDb = 1.4f, .tapeBias = 0, .tapeBypass = false,
+      .tapeDriveDb = 3.0f, .tapeBodyDb = 1.4f, .tapeBias = 0, .tapeBypass = false,
       .transformerDriveDb = 10.0f, .transformerWeightDb = 4.0f, .transformerBypass = false,
       .finalOutputDb = -3.0f },
 
@@ -309,8 +309,8 @@ inline constexpr FactoryPreset kFactoryPresets[] = {
       .vcaThresholdDb = -16.0f, .vcaRatio = 1, .vcaTiming = 2, .vcaKneeDb = 4.0f,
       .vcaMakeupDb = 1.0f,
       .fluxMode = 1, .fluxIntensity = 0.45f, .magneticDriveDb = 4.0f, .attackPreserve = 0.35f, .fluxBypass = false,
-      .tapeDriveDb = 5.0f, .tapeBodyDb = 1.5f, .tapeBypass = false,
-      .transformerDriveDb = 3.0f, .transformerWeightDb = 3.0f, .transformerBypass = false,
+      .tapeDriveDb = 1.0f, .tapeBodyDb = 1.5f, .tapeBypass = false,
+      .transformerDriveDb = 6.0f, .transformerWeightDb = 3.0f, .transformerBypass = false,
       .finalOutputDb = -1.0f },
 
     { .name = "Crack Snare", .group = "Drums",
@@ -318,7 +318,7 @@ inline constexpr FactoryPreset kFactoryPresets[] = {
       .vcaThresholdDb = -10.0f, .vcaRatio = 2, .vcaTiming = 0, .vcaKneeDb = 1.0f,
       .vcaScHpf = true, .vcaScHpfHz = 180.0f,
       .fluxMode = 0, .fluxIntensity = 0.75f, .magneticDriveDb = 6.0f, .attackPreserve = 0.20f, .fluxBypass = false,
-      .tapeDriveDb = 3.0f, .tapeBodyDb = 0.2f, .tapeBias = 2, .tapeBypass = false,
+      .tapeDriveDb = 0.0f, .tapeBodyDb = 0.2f, .tapeBias = 2, .tapeBypass = false,
       .finalOutputDb = -0.5f },
 
     { .name = "Dusty Snare", .group = "Drums",
@@ -326,7 +326,7 @@ inline constexpr FactoryPreset kFactoryPresets[] = {
       .vcaThresholdDb = -18.0f, .vcaRatio = 1, .vcaTiming = 4, .vcaKneeDb = 6.0f,
       .vcaMakeupDb = 1.0f,
       .fluxMode = 2, .fluxIntensity = 0.40f, .magneticDriveDb = 3.0f, .attackPreserve = 0.30f, .fluxBypass = false,
-      .tapeDriveDb = 7.0f, .tapeBodyDb = 2.0f, .tapeBias = 2, .tapeBypass = false,
+      .tapeDriveDb = 3.0f, .tapeBodyDb = 2.0f, .tapeBias = 2, .tapeBypass = false,
       .transformerDriveDb = 2.0f, .transformerWeightDb = 4.0f, .transformerBypass = false,
       .mixPercent = 85.0f, .finalOutputDb = -1.0f },
 
@@ -335,7 +335,7 @@ inline constexpr FactoryPreset kFactoryPresets[] = {
       .vcaThresholdDb = -14.0f, .vcaRatio = 1, .vcaTiming = 1, .vcaKneeDb = 3.0f,
       .vcaMakeupDb = 1.0f,
       .fluxMode = 1, .fluxIntensity = 0.35f, .magneticDriveDb = 3.0f, .attackPreserve = 0.40f, .fluxBypass = false,
-      .tapeDriveDb = 3.0f, .tapeBodyDb = 0.6f, .tapeBypass = false,
+      .tapeDriveDb = 0.0f, .tapeBodyDb = 0.6f, .tapeBypass = false,
       .transformerDriveDb = 1.0f, .transformerWeightDb = 1.5f, .transformerBypass = false },
 
     { .name = "Rim Shot", .group = "Drums",
@@ -343,15 +343,15 @@ inline constexpr FactoryPreset kFactoryPresets[] = {
       .vcaThresholdDb = -12.0f, .vcaRatio = 1, .vcaTiming = 0, .vcaKneeDb = 1.0f,
       .vcaScHpf = true, .vcaScHpfHz = 200.0f,
       .fluxMode = 0, .fluxIntensity = 0.50f, .magneticDriveDb = 3.0f, .attackPreserve = 0.15f, .fluxBypass = false,
-      .tapeDriveDb = 2.0f, .tapeBodyDb = 0.0f, .tapeBias = 2, .tapeBypass = false },
+      .tapeDriveDb = 0.0f, .tapeBodyDb = 0.0f, .tapeBias = 2, .tapeBypass = false },
 
     { .name = "Tom Weight", .group = "Drums",
       .detail = "Body and a medium bump for floor and rack toms.",
       .vcaThresholdDb = -16.0f, .vcaRatio = 1, .vcaTiming = 3, .vcaKneeDb = 5.0f,
       .vcaMakeupDb = 1.0f,
       .fluxMode = 2, .fluxIntensity = 0.30f, .magneticDriveDb = 3.0f, .attackPreserve = 0.40f, .fluxBypass = false,
-      .tapeDriveDb = 5.0f, .tapeBodyDb = 2.2f, .tapeBypass = false,
-      .transformerDriveDb = 5.0f, .transformerWeightDb = 4.5f, .transformerBypass = false,
+      .tapeDriveDb = 1.0f, .tapeBodyDb = 2.2f, .tapeBypass = false,
+      .transformerDriveDb = 7.0f, .transformerWeightDb = 4.5f, .transformerBypass = false,
       .finalOutputDb = -1.5f },
 
     { .name = "Cowbell", .group = "Drums",
@@ -359,13 +359,13 @@ inline constexpr FactoryPreset kFactoryPresets[] = {
       .vcaThresholdDb = -10.0f, .vcaRatio = 2, .vcaTiming = 0, .vcaKneeDb = 1.0f,
       .vcaScHpf = true, .vcaScHpfHz = 220.0f,
       .fluxMode = 0, .fluxIntensity = 0.40f, .magneticDriveDb = 4.0f, .attackPreserve = 0.20f, .fluxBypass = false,
-      .tapeDriveDb = 2.5f, .tapeBodyDb = 0.0f, .tapeBias = 2, .tapeBypass = false },
+      .tapeDriveDb = 0.0f, .tapeBodyDb = 0.0f, .tapeBias = 2, .tapeBypass = false },
 
     { .name = "Soft Hats", .group = "Drums",
       .detail = "Narrow flux, high-bias tape, no transformer. Hats sit back.",
       .vcaBypass = true,
       .fluxMode = 0, .fluxIntensity = 0.25f, .magneticDriveDb = 1.5f, .attackPreserve = 0.30f, .fluxBypass = false,
-      .tapeDriveDb = 1.5f, .tapeBodyDb = 0.0f, .tapeBias = 2, .tapeBypass = false,
+      .tapeDriveDb = 0.0f, .tapeBodyDb = 0.0f, .tapeBias = 2, .tapeBypass = false,
       .mixPercent = 60.0f },
 
     { .name = "Crisp Hats", .group = "Drums",
@@ -377,7 +377,7 @@ inline constexpr FactoryPreset kFactoryPresets[] = {
       .detail = "High-bias tape and a little iron darken closed hats.",
       .vcaBypass = true,
       .fluxMode = 2, .fluxIntensity = 0.20f, .magneticDriveDb = 1.0f, .attackPreserve = 0.25f, .fluxBypass = false,
-      .tapeDriveDb = 3.0f, .tapeBodyDb = 0.3f, .tapeBias = 2, .tapeBypass = false,
+      .tapeDriveDb = 0.0f, .tapeBodyDb = 0.3f, .tapeBias = 2, .tapeBypass = false,
       .mixPercent = 70.0f },
 
     { .name = "Open Hat Air", .group = "Drums",
@@ -391,21 +391,21 @@ inline constexpr FactoryPreset kFactoryPresets[] = {
       .vcaThresholdDb = -24.0f, .vcaRatio = 1, .vcaTiming = 2, .vcaKneeDb = 6.0f, .vcaDetector = 1,
       .vcaScHpf = true, .vcaScHpfHz = 200.0f,
       .fluxMode = 0, .fluxIntensity = 0.20f, .magneticDriveDb = 1.0f, .attackPreserve = 0.20f, .fluxBypass = false,
-      .tapeDriveDb = 1.0f, .tapeBodyDb = 0.0f, .tapeBias = 2, .tapeBypass = false },
+      .tapeDriveDb = 0.0f, .tapeBodyDb = 0.0f, .tapeBias = 2, .tapeBypass = false },
 
     { .name = "Perc Bus", .group = "Drums",
       .detail = "Light 2:1 and nickel for congas, tambourine and extra tops.",
       .vcaThresholdDb = -18.0f, .vcaRatio = 1, .vcaTiming = 2, .vcaKneeDb = 4.0f,
       .vcaScHpf = true, .vcaScHpfHz = 160.0f, .vcaMakeupDb = 0.5f,
       .fluxMode = 0, .fluxIntensity = 0.35f, .magneticDriveDb = 2.0f, .attackPreserve = 0.35f, .fluxBypass = false,
-      .tapeDriveDb = 2.0f, .tapeBodyDb = 0.3f, .tapeBypass = false },
+      .tapeDriveDb = 0.0f, .tapeBodyDb = 0.3f, .tapeBypass = false },
 
     { .name = "Break Glue", .group = "Breaks",
       .detail = "The loop sits as one drum take. Medium compression, body, some weight.",
       .vcaThresholdDb = -18.0f, .vcaRatio = 2, .vcaTiming = 4, .vcaKneeDb = 6.0f,
       .vcaScHpf = true, .vcaScHpfHz = 90.0f, .vcaMakeupDb = 1.5f,
       .fluxMode = 1, .fluxIntensity = 0.35f, .magneticDriveDb = 3.0f, .attackPreserve = 0.40f, .fluxBypass = false,
-      .tapeDriveDb = 6.0f, .tapeBodyDb = 1.8f, .tapeBypass = false,
+      .tapeDriveDb = 2.0f, .tapeBodyDb = 1.8f, .tapeBypass = false,
       .transformerDriveDb = 4.0f, .transformerWeightDb = 4.0f, .transformerBypass = false,
       .finalOutputDb = -1.5f },
 
@@ -414,7 +414,7 @@ inline constexpr FactoryPreset kFactoryPresets[] = {
       .vcaThresholdDb = -14.0f, .vcaRatio = 2, .vcaTiming = 1, .vcaKneeDb = 3.0f,
       .vcaScHpf = true, .vcaScHpfHz = 120.0f, .vcaMakeupDb = 1.0f,
       .fluxMode = 0, .fluxIntensity = 0.50f, .magneticDriveDb = 4.0f, .attackPreserve = 0.55f, .fluxBypass = false,
-      .tapeDriveDb = 4.0f, .tapeBodyDb = 0.8f, .tapeBypass = false,
+      .tapeDriveDb = 0.0f, .tapeBodyDb = 0.8f, .tapeBypass = false,
       .transformerDriveDb = 3.0f, .transformerWeightDb = 2.5f, .transformerBypass = false,
       .finalOutputDb = -1.0f },
 
@@ -424,7 +424,7 @@ inline constexpr FactoryPreset kFactoryPresets[] = {
       .vcaThresholdDb = -20.0f, .vcaRatio = 1, .vcaTiming = 6, .vcaKneeDb = 8.0f, .vcaDetector = 1,
       .vcaMakeupDb = 1.0f,
       .fluxMode = 2, .fluxIntensity = 0.40f, .magneticDriveDb = 3.0f, .attackPreserve = 0.30f, .fluxBypass = false,
-      .tapeDriveDb = 12.0f, .tapeBodyDb = 2.4f, .tapeReturnDb = -2.0f, .tapeBias = 0, .tapeBypass = false,
+      .tapeDriveDb = 8.0f, .tapeBodyDb = 2.4f, .tapeReturnDb = 0.0f, .tapeBias = 0, .tapeBypass = false,
       .transformerDriveDb = 5.0f, .transformerWeightDb = 5.0f, .transformerBypass = false,
       .mixPercent = 80.0f, .finalOutputDb = -2.0f },
 
@@ -433,7 +433,7 @@ inline constexpr FactoryPreset kFactoryPresets[] = {
       .vcaThresholdDb = -14.0f, .vcaRatio = 2, .vcaTiming = 1, .vcaKneeDb = 2.0f,
       .vcaScHpf = true, .vcaScHpfHz = 130.0f, .vcaMakeupDb = 1.5f,
       .fluxMode = 0, .fluxIntensity = 0.40f, .magneticDriveDb = 3.0f, .attackPreserve = 0.60f, .fluxBypass = false,
-      .tapeDriveDb = 3.0f, .tapeBodyDb = 0.6f, .tapeBypass = false,
+      .tapeDriveDb = 0.0f, .tapeBodyDb = 0.6f, .tapeBypass = false,
       .transformerDriveDb = 2.0f, .transformerWeightDb = 2.0f, .transformerBypass = false,
       .finalOutputDb = -1.0f },
 
@@ -443,7 +443,7 @@ inline constexpr FactoryPreset kFactoryPresets[] = {
       .vcaThresholdDb = -16.0f, .vcaRatio = 2, .vcaTiming = 4, .vcaKneeDb = 4.0f,
       .vcaMakeupDb = 0.0f,
       .fluxMode = 2, .fluxIntensity = 0.55f, .magneticDriveDb = 6.0f, .attackPreserve = 0.20f, .fluxBypass = false,
-      .tapeDriveDb = 14.0f, .tapeBodyDb = 2.0f, .tapeReturnDb = -3.0f, .tapeBias = 0, .tapeBypass = false,
+      .tapeDriveDb = 10.0f, .tapeBodyDb = 2.0f, .tapeReturnDb = -1.0f, .tapeBias = 0, .tapeBypass = false,
       .transformerDriveDb = 8.0f, .transformerWeightDb = 4.5f, .transformerBypass = false,
       .finalOutputDb = -4.0f },
 
@@ -452,7 +452,7 @@ inline constexpr FactoryPreset kFactoryPresets[] = {
       .vcaThresholdDb = -20.0f, .vcaRatio = 1, .vcaTiming = 5, .vcaKneeDb = 8.0f, .vcaDetector = 1,
       .vcaMakeupDb = 0.5f,
       .fluxMode = 2, .fluxIntensity = 0.35f, .magneticDriveDb = 2.0f, .attackPreserve = 0.25f, .fluxBypass = false,
-      .tapeDriveDb = 6.0f, .tapeBodyDb = 1.6f, .tapeBias = 2, .tapeBypass = false,
+      .tapeDriveDb = 2.0f, .tapeBodyDb = 1.6f, .tapeBias = 2, .tapeBypass = false,
       .transformerDriveDb = 1.0f, .transformerWeightDb = 2.0f, .transformerBypass = false,
       .mixPercent = 85.0f, .finalOutputDb = -1.0f },
 
@@ -461,7 +461,7 @@ inline constexpr FactoryPreset kFactoryPresets[] = {
       .vcaThresholdDb = -20.0f, .vcaRatio = 1, .vcaTiming = 6, .vcaKneeDb = 8.0f, .vcaDetector = 1,
       .vcaMakeupDb = 1.0f,
       .fluxMode = 2, .fluxIntensity = 0.30f, .magneticDriveDb = 2.0f, .attackPreserve = 0.40f, .fluxBypass = false,
-      .tapeDriveDb = 5.0f, .tapeBodyDb = 2.0f, .tapeBias = 2, .tapeBypass = false,
+      .tapeDriveDb = 1.0f, .tapeBodyDb = 2.0f, .tapeBias = 2, .tapeBypass = false,
       .transformerDriveDb = 2.0f, .transformerWeightDb = 4.0f, .transformerBypass = false,
       .finalOutputDb = -1.0f },
 
@@ -470,7 +470,7 @@ inline constexpr FactoryPreset kFactoryPresets[] = {
       .vcaThresholdDb = -16.0f, .vcaRatio = 1, .vcaTiming = 2, .vcaKneeDb = 4.0f,
       .vcaScHpf = true, .vcaScHpfHz = 100.0f, .vcaMakeupDb = 1.0f,
       .fluxMode = 1, .fluxIntensity = 0.35f, .magneticDriveDb = 3.0f, .attackPreserve = 0.70f, .fluxBypass = false,
-      .tapeDriveDb = 3.0f, .tapeBodyDb = 0.8f, .tapeBypass = false,
+      .tapeDriveDb = 0.0f, .tapeBodyDb = 0.8f, .tapeBypass = false,
       .transformerDriveDb = 2.0f, .transformerWeightDb = 2.0f, .transformerBypass = false },
 
     { .name = "Vocal Dust", .group = "Samples",
@@ -478,7 +478,7 @@ inline constexpr FactoryPreset kFactoryPresets[] = {
       .vcaThresholdDb = -18.0f, .vcaRatio = 1, .vcaTiming = 4, .vcaKneeDb = 6.0f,
       .vcaMakeupDb = 1.0f,
       .fluxMode = 2, .fluxIntensity = 0.40f, .magneticDriveDb = 3.0f, .attackPreserve = 0.35f, .fluxBypass = false,
-      .tapeDriveDb = 8.0f, .tapeBodyDb = 1.6f, .tapeBias = 2, .tapeBypass = false,
+      .tapeDriveDb = 4.0f, .tapeBodyDb = 1.6f, .tapeBias = 2, .tapeBypass = false,
       .transformerDriveDb = 2.0f, .transformerWeightDb = 3.0f, .transformerBypass = false,
       .mixPercent = 75.0f, .finalOutputDb = -1.0f },
 
@@ -487,7 +487,7 @@ inline constexpr FactoryPreset kFactoryPresets[] = {
       .vcaThresholdDb = -16.0f, .vcaRatio = 1, .vcaTiming = 3, .vcaKneeDb = 5.0f,
       .vcaScHpf = true, .vcaScHpfHz = 90.0f, .vcaMakeupDb = 1.5f,
       .fluxMode = 1, .fluxIntensity = 0.30f, .magneticDriveDb = 2.0f, .attackPreserve = 0.55f, .fluxBypass = false,
-      .tapeDriveDb = 4.0f, .tapeBodyDb = 1.0f, .tapeBypass = false,
+      .tapeDriveDb = 0.0f, .tapeBodyDb = 1.0f, .tapeBypass = false,
       .transformerDriveDb = 2.0f, .transformerWeightDb = 3.0f, .transformerBypass = false,
       .finalOutputDb = -1.0f },
 
@@ -496,7 +496,7 @@ inline constexpr FactoryPreset kFactoryPresets[] = {
       .vcaThresholdDb = -22.0f, .vcaRatio = 1, .vcaTiming = 6, .vcaKneeDb = 8.0f, .vcaDetector = 1,
       .vcaMakeupDb = 0.5f,
       .fluxMode = 1, .fluxIntensity = 0.15f, .magneticDriveDb = 1.0f, .attackPreserve = 0.40f, .fluxBypass = false,
-      .tapeDriveDb = 4.0f, .tapeBodyDb = 1.4f, .tapeBias = 2, .tapeBypass = false,
+      .tapeDriveDb = 0.0f, .tapeBodyDb = 1.4f, .tapeBias = 2, .tapeBypass = false,
       .transformerDriveDb = 2.0f, .transformerWeightDb = 3.0f, .transformerBypass = false,
       .finalOutputDb = -0.5f },
 
@@ -505,7 +505,7 @@ inline constexpr FactoryPreset kFactoryPresets[] = {
       .vcaThresholdDb = -20.0f, .vcaRatio = 1, .vcaTiming = 5, .vcaKneeDb = 8.0f, .vcaDetector = 1,
       .vcaMakeupDb = 0.5f,
       .fluxMode = 2, .fluxIntensity = 0.20f, .magneticDriveDb = 1.5f, .attackPreserve = 0.45f, .fluxBypass = false,
-      .tapeDriveDb = 3.0f, .tapeBodyDb = 1.5f, .tapeBias = 2, .tapeBypass = false,
+      .tapeDriveDb = 0.0f, .tapeBodyDb = 1.5f, .tapeBias = 2, .tapeBypass = false,
       .transformerDriveDb = 1.5f, .transformerWeightDb = 3.0f, .transformerBypass = false },
 
     { .name = "Rhodes", .group = "Samples",
@@ -513,7 +513,7 @@ inline constexpr FactoryPreset kFactoryPresets[] = {
       .vcaThresholdDb = -18.0f, .vcaRatio = 1, .vcaTiming = 7, .vcaKneeDb = 10.0f, .vcaDetector = 1,
       .vcaMakeupDb = 1.0f,
       .fluxMode = 2, .fluxIntensity = 0.35f, .magneticDriveDb = 3.0f, .attackPreserve = 0.50f, .fluxBypass = false,
-      .tapeDriveDb = 5.0f, .tapeBodyDb = 1.8f, .tapeBypass = false,
+      .tapeDriveDb = 1.0f, .tapeBodyDb = 1.8f, .tapeBypass = false,
       .transformerDriveDb = 3.0f, .transformerWeightDb = 4.0f, .transformerBypass = false,
       .finalOutputDb = -1.0f },
 
@@ -522,7 +522,7 @@ inline constexpr FactoryPreset kFactoryPresets[] = {
       .vcaThresholdDb = -12.0f, .vcaRatio = 2, .vcaTiming = 1, .vcaKneeDb = 3.0f,
       .vcaScHpf = true, .vcaScHpfHz = 120.0f, .vcaMakeupDb = 0.5f,
       .fluxMode = 1, .fluxIntensity = 0.45f, .magneticDriveDb = 4.0f, .attackPreserve = 0.60f, .fluxBypass = false,
-      .tapeDriveDb = 3.0f, .tapeBodyDb = 0.4f, .tapeBypass = false,
+      .tapeDriveDb = 0.0f, .tapeBodyDb = 0.4f, .tapeBypass = false,
       .transformerDriveDb = 1.0f, .transformerWeightDb = 1.0f, .transformerBypass = false },
 
     { .name = "Bass Sample", .group = "Samples",
@@ -531,7 +531,7 @@ inline constexpr FactoryPreset kFactoryPresets[] = {
       .vcaThresholdDb = -18.0f, .vcaRatio = 2, .vcaTiming = 5, .vcaKneeDb = 6.0f, .vcaDetector = 1,
       .vcaMakeupDb = 1.5f,
       .fluxMode = 2, .fluxIntensity = 0.35f, .magneticDriveDb = 4.0f, .attackPreserve = 0.30f, .fluxBypass = false,
-      .tapeDriveDb = 6.0f, .tapeBodyDb = 2.5f, .tapeBypass = false,
+      .tapeDriveDb = 2.0f, .tapeBodyDb = 2.5f, .tapeBypass = false,
       .transformerDriveDb = 7.0f, .transformerWeightDb = 5.0f, .transformerBypass = false,
       .finalOutputDb = -2.0f },
 
@@ -541,7 +541,7 @@ inline constexpr FactoryPreset kFactoryPresets[] = {
       .vcaThresholdDb = -16.0f, .vcaRatio = 1, .vcaTiming = 4, .vcaKneeDb = 6.0f, .vcaDetector = 1,
       .vcaMakeupDb = 1.0f,
       .fluxMode = 1, .fluxIntensity = 0.55f, .magneticDriveDb = 6.0f, .attackPreserve = 0.25f, .fluxBypass = false,
-      .tapeDriveDb = 4.0f, .tapeBodyDb = 1.0f, .tapeBypass = false,
+      .tapeDriveDb = 0.0f, .tapeBodyDb = 1.0f, .tapeBypass = false,
       .transformerDriveDb = 8.0f, .transformerWeightDb = 3.0f, .transformerBypass = false,
       .finalOutputDb = -2.0f },
 
@@ -549,7 +549,7 @@ inline constexpr FactoryPreset kFactoryPresets[] = {
       .detail = "Huge and fairly clean. Full weight and body, little extra harmonic dirt.",
       .vcaThresholdDb = -20.0f, .vcaRatio = 1, .vcaTiming = 7, .vcaKneeDb = 8.0f, .vcaDetector = 1,
       .vcaMakeupDb = 0.5f,
-      .tapeDriveDb = 1.5f, .tapeBodyDb = 3.0f, .tapeBias = 2, .tapeBypass = false,
+      .tapeDriveDb = 0.0f, .tapeBodyDb = 3.0f, .tapeBias = 2, .tapeBypass = false,
       .transformerDriveDb = 3.0f, .transformerWeightDb = 6.0f, .transformerBypass = false,
       .finalOutputDb = -1.5f },
 
@@ -558,7 +558,7 @@ inline constexpr FactoryPreset kFactoryPresets[] = {
       .vcaThresholdDb = -18.0f, .vcaRatio = 1, .vcaTiming = 4, .vcaKneeDb = 6.0f,
       .vcaMakeupDb = 0.5f,
       .fluxMode = 1, .fluxIntensity = 0.30f, .magneticDriveDb = 3.0f, .attackPreserve = 0.40f, .fluxBypass = false,
-      .tapeDriveDb = 5.0f, .tapeBodyDb = 1.2f, .tapeBypass = false,
+      .tapeDriveDb = 1.0f, .tapeBodyDb = 1.2f, .tapeBypass = false,
       .transformerDriveDb = 2.0f, .transformerWeightDb = 3.0f, .transformerBypass = false,
       .finalOutputDb = -0.5f },
 
@@ -567,7 +567,7 @@ inline constexpr FactoryPreset kFactoryPresets[] = {
       .vcaThresholdDb = -22.0f, .vcaRatio = 1, .vcaTiming = 6, .vcaKneeDb = 10.0f, .vcaDetector = 1,
       .vcaMakeupDb = 0.5f,
       .fluxMode = 2, .fluxIntensity = 0.20f, .magneticDriveDb = 1.0f, .attackPreserve = 0.55f, .fluxBypass = false,
-      .tapeDriveDb = 3.0f, .tapeBodyDb = 1.0f, .tapeBias = 2, .tapeBypass = false,
+      .tapeDriveDb = 0.0f, .tapeBodyDb = 1.0f, .tapeBias = 2, .tapeBypass = false,
       .transformerDriveDb = 1.0f, .transformerWeightDb = 2.5f, .transformerBypass = false,
       .mixPercent = 80.0f },
 
@@ -576,7 +576,7 @@ inline constexpr FactoryPreset kFactoryPresets[] = {
       .vcaThresholdDb = -24.0f, .vcaRatio = 1, .vcaTiming = 8, .vcaKneeDb = 12.0f, .vcaDetector = 1,
       .vcaMakeupDb = 0.5f,
       .fluxMode = 2, .fluxIntensity = 0.15f, .magneticDriveDb = 1.0f, .attackPreserve = 0.60f, .fluxBypass = false,
-      .tapeDriveDb = 2.0f, .tapeBodyDb = 0.8f, .tapeBias = 2, .tapeBypass = false,
+      .tapeDriveDb = 0.0f, .tapeBodyDb = 0.8f, .tapeBias = 2, .tapeBypass = false,
       .transformerDriveDb = 1.0f, .transformerWeightDb = 2.0f, .transformerBypass = false },
 
     { .name = "Scratch", .group = "Samples",
@@ -584,7 +584,7 @@ inline constexpr FactoryPreset kFactoryPresets[] = {
       .vcaThresholdDb = -12.0f, .vcaRatio = 2, .vcaTiming = 0, .vcaKneeDb = 2.0f,
       .vcaScHpf = true, .vcaScHpfHz = 150.0f,
       .fluxMode = 0, .fluxIntensity = 0.55f, .magneticDriveDb = 4.0f, .attackPreserve = 0.25f, .fluxBypass = false,
-      .tapeDriveDb = 3.0f, .tapeBodyDb = 0.2f, .tapeBypass = false },
+      .tapeDriveDb = 0.0f, .tapeBodyDb = 0.2f, .tapeBypass = false },
 
     { .name = "MPC Resample", .group = "Samples",
       .detail = "Strong combined saturation and a controlled output, as if bounced back in.",
@@ -592,7 +592,7 @@ inline constexpr FactoryPreset kFactoryPresets[] = {
       .vcaThresholdDb = -14.0f, .vcaRatio = 2, .vcaTiming = 3, .vcaKneeDb = 4.0f,
       .vcaScHpf = true, .vcaScHpfHz = 80.0f, .vcaMakeupDb = 1.0f,
       .fluxMode = 1, .fluxIntensity = 0.60f, .magneticDriveDb = 7.0f, .attackPreserve = 0.25f, .fluxBypass = false,
-      .tapeDriveDb = 10.0f, .tapeBodyDb = 1.8f, .tapeReturnDb = -2.0f, .tapeBias = 0, .tapeBypass = false,
+      .tapeDriveDb = 6.0f, .tapeBodyDb = 1.8f, .tapeReturnDb = 0.0f, .tapeBias = 0, .tapeBypass = false,
       .transformerDriveDb = 8.0f, .transformerWeightDb = 4.0f, .transformerBypass = false,
       .finalOutputDb = -3.0f },
 
@@ -601,7 +601,7 @@ inline constexpr FactoryPreset kFactoryPresets[] = {
       .vcaThresholdDb = -14.0f, .vcaRatio = 2, .vcaTiming = 2, .vcaKneeDb = 3.0f,
       .vcaScHpf = true, .vcaScHpfHz = 110.0f, .vcaMakeupDb = 1.5f,
       .fluxMode = 1, .fluxIntensity = 0.50f, .magneticDriveDb = 5.0f, .attackPreserve = 0.50f, .fluxBypass = false,
-      .tapeDriveDb = 5.0f, .tapeBodyDb = 2.0f, .tapeBypass = false,
+      .tapeDriveDb = 1.0f, .tapeBodyDb = 2.0f, .tapeBypass = false,
       .transformerDriveDb = 6.0f, .transformerWeightDb = 4.0f, .transformerBypass = false,
       .finalOutputDb = -2.0f },
 
@@ -611,7 +611,7 @@ inline constexpr FactoryPreset kFactoryPresets[] = {
       .vcaThresholdDb = -18.0f, .vcaRatio = 2, .vcaTiming = 5, .vcaKneeDb = 6.0f, .vcaDetector = 1,
       .vcaMakeupDb = 1.5f,
       .fluxMode = 2, .fluxIntensity = 0.30f, .magneticDriveDb = 3.0f, .attackPreserve = 0.40f, .fluxBypass = false,
-      .tapeDriveDb = 5.0f, .tapeBodyDb = 3.0f, .tapeBypass = false,
+      .tapeDriveDb = 1.0f, .tapeBodyDb = 3.0f, .tapeBypass = false,
       .transformerDriveDb = 8.0f, .transformerWeightDb = 6.0f, .transformerBypass = false,
       .finalOutputDb = -3.0f },
 
@@ -620,7 +620,7 @@ inline constexpr FactoryPreset kFactoryPresets[] = {
       .vcaThresholdDb = -14.0f, .vcaRatio = 1, .vcaTiming = 1, .vcaKneeDb = 3.0f,
       .vcaScHpf = true, .vcaScHpfHz = 180.0f, .vcaMakeupDb = 0.5f,
       .fluxMode = 0, .fluxIntensity = 0.50f, .magneticDriveDb = 4.0f, .attackPreserve = 0.35f, .fluxBypass = false,
-      .tapeDriveDb = 2.5f, .tapeBodyDb = 0.3f, .tapeBias = 2, .tapeBypass = false,
+      .tapeDriveDb = 0.0f, .tapeBodyDb = 0.3f, .tapeBias = 2, .tapeBypass = false,
       .transformerDriveDb = 1.0f, .transformerWeightDb = 1.0f, .transformerBypass = false },
 
     { .name = "Hat And Perc", .group = "Stacks",
@@ -628,14 +628,14 @@ inline constexpr FactoryPreset kFactoryPresets[] = {
       .vcaThresholdDb = -16.0f, .vcaRatio = 1, .vcaTiming = 1, .vcaKneeDb = 4.0f,
       .vcaScHpf = true, .vcaScHpfHz = 200.0f,
       .fluxMode = 0, .fluxIntensity = 0.30f, .magneticDriveDb = 2.0f, .attackPreserve = 0.25f, .fluxBypass = false,
-      .tapeDriveDb = 1.5f, .tapeBodyDb = 0.0f, .tapeBias = 2, .tapeBypass = false },
+      .tapeDriveDb = 0.0f, .tapeBodyDb = 0.0f, .tapeBias = 2, .tapeBypass = false },
 
     { .name = "Break And Bass", .group = "Stacks",
       .detail = "Loop plus bass. Sidechain high enough to keep the break, weight for the bass.",
       .vcaThresholdDb = -16.0f, .vcaRatio = 2, .vcaTiming = 4, .vcaKneeDb = 5.0f,
       .vcaScHpf = true, .vcaScHpfHz = 70.0f, .vcaMakeupDb = 1.5f,
       .fluxMode = 1, .fluxIntensity = 0.35f, .magneticDriveDb = 4.0f, .attackPreserve = 0.40f, .fluxBypass = false,
-      .tapeDriveDb = 6.0f, .tapeBodyDb = 2.2f, .tapeBypass = false,
+      .tapeDriveDb = 2.0f, .tapeBodyDb = 2.2f, .tapeBypass = false,
       .transformerDriveDb = 6.0f, .transformerWeightDb = 5.0f, .transformerBypass = false,
       .finalOutputDb = -2.0f },
 
@@ -645,7 +645,7 @@ inline constexpr FactoryPreset kFactoryPresets[] = {
       .vcaThresholdDb = -18.0f, .vcaRatio = 1, .vcaTiming = 6, .vcaKneeDb = 8.0f, .vcaDetector = 1,
       .vcaScHpf = true, .vcaScHpfHz = 80.0f, .vcaMakeupDb = 1.5f,
       .fluxMode = 2, .fluxIntensity = 0.35f, .magneticDriveDb = 3.0f, .attackPreserve = 0.35f, .fluxBypass = false,
-      .tapeDriveDb = 6.0f, .tapeBodyDb = 2.0f, .tapeBypass = false,
+      .tapeDriveDb = 2.0f, .tapeBodyDb = 2.0f, .tapeBypass = false,
       .transformerDriveDb = 4.0f, .transformerWeightDb = 4.5f, .transformerBypass = false,
       .finalOutputDb = -2.0f },
 
@@ -654,7 +654,7 @@ inline constexpr FactoryPreset kFactoryPresets[] = {
       .vcaThresholdDb = -18.0f, .vcaRatio = 2, .vcaTiming = 6, .vcaKneeDb = 8.0f, .vcaDetector = 1,
       .vcaScHpf = true, .vcaScHpfHz = 120.0f, .vcaMakeupDb = 1.0f,
       .fluxMode = 2, .fluxIntensity = 0.25f, .magneticDriveDb = 2.0f, .attackPreserve = 0.20f, .fluxBypass = false,
-      .tapeDriveDb = 5.0f, .tapeBodyDb = 2.2f, .tapeBias = 2, .tapeBypass = false,
+      .tapeDriveDb = 1.0f, .tapeBodyDb = 2.2f, .tapeBias = 2, .tapeBypass = false,
       .transformerDriveDb = 3.0f, .transformerWeightDb = 5.0f, .transformerBypass = false,
       .finalOutputDb = -1.5f },
 
@@ -663,7 +663,7 @@ inline constexpr FactoryPreset kFactoryPresets[] = {
       .vcaThresholdDb = -20.0f, .vcaRatio = 1, .vcaTiming = 4, .vcaKneeDb = 6.0f,
       .vcaScHpf = true, .vcaScHpfHz = 140.0f, .vcaMakeupDb = 1.0f,
       .fluxMode = 1, .fluxIntensity = 0.30f, .magneticDriveDb = 2.0f, .attackPreserve = 0.55f, .fluxBypass = false,
-      .tapeDriveDb = 3.0f, .tapeBodyDb = 0.8f, .tapeBias = 2, .tapeBypass = false,
+      .tapeDriveDb = 0.0f, .tapeBodyDb = 0.8f, .tapeBias = 2, .tapeBypass = false,
       .transformerDriveDb = 1.5f, .transformerWeightDb = 2.0f, .transformerBypass = false,
       .finalOutputDb = -0.5f },
 
@@ -672,7 +672,7 @@ inline constexpr FactoryPreset kFactoryPresets[] = {
       .vcaThresholdDb = -18.0f, .vcaRatio = 1, .vcaTiming = 5, .vcaKneeDb = 8.0f, .vcaDetector = 1,
       .vcaScHpf = true, .vcaScHpfHz = 90.0f, .vcaMakeupDb = 1.5f,
       .fluxMode = 1, .fluxIntensity = 0.25f, .magneticDriveDb = 2.0f, .attackPreserve = 0.60f, .fluxBypass = false,
-      .tapeDriveDb = 4.0f, .tapeBodyDb = 1.4f, .tapeBias = 2, .tapeBypass = false,
+      .tapeDriveDb = 0.0f, .tapeBodyDb = 1.4f, .tapeBias = 2, .tapeBypass = false,
       .transformerDriveDb = 2.0f, .transformerWeightDb = 3.5f, .transformerBypass = false,
       .finalOutputDb = -1.0f },
 
@@ -682,7 +682,7 @@ inline constexpr FactoryPreset kFactoryPresets[] = {
       .vcaThresholdDb = -18.0f, .vcaRatio = 2, .vcaTiming = 6, .vcaKneeDb = 8.0f, .vcaDetector = 1,
       .vcaScHpf = true, .vcaScHpfHz = 70.0f, .vcaMakeupDb = 2.0f,
       .fluxMode = 2, .fluxIntensity = 0.40f, .magneticDriveDb = 3.0f, .attackPreserve = 0.30f, .fluxBypass = false,
-      .tapeDriveDb = 6.0f, .tapeBodyDb = 2.0f, .tapeBypass = false,
+      .tapeDriveDb = 2.0f, .tapeBodyDb = 2.0f, .tapeBypass = false,
       .transformerDriveDb = 4.0f, .transformerWeightDb = 4.5f, .transformerBypass = false,
       .finalOutputDb = -2.5f },
 
@@ -692,7 +692,7 @@ inline constexpr FactoryPreset kFactoryPresets[] = {
       .vcaThresholdDb = -12.0f, .vcaRatio = 3, .vcaTiming = 3, .vcaKneeDb = 3.0f,
       .vcaScHpf = true, .vcaScHpfHz = 80.0f, .vcaMakeupDb = 2.0f,
       .fluxMode = 1, .fluxIntensity = 0.65f, .magneticDriveDb = 8.0f, .attackPreserve = 0.20f, .fluxBypass = false,
-      .tapeDriveDb = 12.0f, .tapeBodyDb = 2.0f, .tapeReturnDb = -2.0f, .tapeBias = 0, .tapeBypass = false,
+      .tapeDriveDb = 8.0f, .tapeBodyDb = 2.0f, .tapeReturnDb = 0.0f, .tapeBias = 0, .tapeBypass = false,
       .transformerDriveDb = 9.0f, .transformerWeightDb = 5.0f, .transformerBypass = false,
       .mixPercent = 85.0f, .finalOutputDb = -3.5f },
 
@@ -702,7 +702,7 @@ inline constexpr FactoryPreset kFactoryPresets[] = {
       .vcaThresholdDb = -20.0f, .vcaRatio = 1, .vcaTiming = 6, .vcaKneeDb = 10.0f, .vcaDetector = 1,
       .vcaMakeupDb = 1.0f,
       .fluxMode = 2, .fluxIntensity = 0.45f, .magneticDriveDb = 3.0f, .attackPreserve = 0.30f, .fluxBypass = false,
-      .tapeDriveDb = 13.0f, .tapeBodyDb = 2.6f, .tapeReturnDb = -2.5f, .tapeBias = 0, .tapeBypass = false,
+      .tapeDriveDb = 9.0f, .tapeBodyDb = 2.6f, .tapeReturnDb = -0.5f, .tapeBias = 0, .tapeBypass = false,
       .transformerDriveDb = 5.0f, .transformerWeightDb = 5.0f, .transformerBypass = false,
       .mixPercent = 90.0f, .finalOutputDb = -2.5f },
 
@@ -712,7 +712,7 @@ inline constexpr FactoryPreset kFactoryPresets[] = {
       .vcaThresholdDb = -10.0f, .vcaRatio = 4, .vcaTiming = 2, .vcaKneeDb = 1.0f,
       .vcaMakeupDb = 2.0f,
       .fluxMode = 2, .fluxIntensity = 0.70f, .magneticDriveDb = 8.0f, .attackPreserve = 0.15f, .fluxBypass = false,
-      .tapeDriveDb = 14.0f, .tapeBodyDb = 2.2f, .tapeReturnDb = -3.0f, .tapeBias = 0, .tapeBypass = false,
+      .tapeDriveDb = 10.0f, .tapeBodyDb = 2.2f, .tapeReturnDb = -1.0f, .tapeBias = 0, .tapeBypass = false,
       .transformerDriveDb = 10.0f, .transformerWeightDb = 5.0f, .transformerBypass = false,
       .mixPercent = 40.0f, .finalOutputDb = -1.0f },
 
@@ -721,7 +721,7 @@ inline constexpr FactoryPreset kFactoryPresets[] = {
       .vcaThresholdDb = -22.0f, .vcaRatio = 1, .vcaTiming = 7, .vcaKneeDb = 10.0f, .vcaDetector = 1,
       .vcaScHpf = true, .vcaScHpfHz = 80.0f, .vcaMakeupDb = 1.0f,
       .fluxMode = 2, .fluxIntensity = 0.20f, .magneticDriveDb = 1.5f, .attackPreserve = 0.40f, .fluxBypass = false,
-      .tapeDriveDb = 3.0f, .tapeBodyDb = 1.2f, .tapeBias = 2, .tapeBypass = false,
+      .tapeDriveDb = 0.0f, .tapeBodyDb = 1.2f, .tapeBias = 2, .tapeBypass = false,
       .transformerDriveDb = 2.0f, .transformerWeightDb = 3.5f, .transformerBypass = false,
       .finalOutputDb = -1.0f },
 
@@ -729,7 +729,7 @@ inline constexpr FactoryPreset kFactoryPresets[] = {
       .detail = "Stateful tape, playback body and a trimmed return. Light everything else.",
       .vcaThresholdDb = -24.0f, .vcaRatio = 1, .vcaTiming = 5, .vcaKneeDb = 8.0f, .vcaDetector = 1,
       .vcaMakeupDb = 0.5f,
-      .tapeDriveDb = 10.0f, .tapeBodyDb = 2.4f, .tapeReturnDb = -1.5f, .tapeBypass = false,
+      .tapeDriveDb = 6.0f, .tapeBodyDb = 2.4f, .tapeReturnDb = 0.0f, .tapeBypass = false,
       .transformerDriveDb = 2.0f, .transformerWeightDb = 3.5f, .transformerBypass = false,
       .finalOutputDb = -1.0f },
 
@@ -739,7 +739,7 @@ inline constexpr FactoryPreset kFactoryPresets[] = {
       .vcaThresholdDb = -8.0f, .vcaRatio = 4, .vcaTiming = 1, .vcaKneeDb = 1.0f,
       .vcaMakeupDb = 2.0f,
       .fluxMode = 0, .fluxIntensity = 0.85f, .magneticDriveDb = 8.0f, .attackPreserve = 0.65f, .fluxBypass = false,
-      .tapeDriveDb = 10.0f, .tapeBodyDb = 1.0f, .tapeReturnDb = -2.0f, .tapeBypass = false,
+      .tapeDriveDb = 6.0f, .tapeBodyDb = 1.0f, .tapeReturnDb = 0.0f, .tapeBypass = false,
       .transformerDriveDb = 6.0f, .transformerWeightDb = 3.0f, .transformerBypass = false,
       .mixPercent = 38.0f, .finalOutputDb = -1.0f },
 
@@ -748,7 +748,7 @@ inline constexpr FactoryPreset kFactoryPresets[] = {
       .vcaThresholdDb = -22.0f, .vcaRatio = 1, .vcaTiming = 6, .vcaKneeDb = 8.0f, .vcaDetector = 1,
       .vcaScHpf = true, .vcaScHpfHz = 60.0f, .vcaMakeupDb = 1.0f,
       .fluxMode = 2, .fluxIntensity = 0.15f, .magneticDriveDb = 1.0f, .attackPreserve = 0.40f, .fluxBypass = false,
-      .tapeDriveDb = 2.0f, .tapeBodyDb = 1.0f, .tapeBypass = false,
+      .tapeDriveDb = 0.0f, .tapeBodyDb = 1.0f, .tapeBypass = false,
       .transformerDriveDb = 4.0f, .transformerWeightDb = 6.0f, .transformerBypass = false,
       .finalOutputDb = -1.5f },
 };

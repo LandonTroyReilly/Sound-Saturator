@@ -446,6 +446,119 @@ void testTransformer()
     EXPECT (std::isfinite (bassDistortion));
 }
 
+float lowBandRms (const std::vector<float>& data, int sampleRate, int start, int end)
+{
+    const float coeff = 1.0f - std::exp (-2.0f * 3.14159265f * 140.0f / (float) sampleRate);
+    float low = 0.0f;
+    double energy = 0.0;
+    int count = 0;
+    const int last = std::min (end, (int) data.size());
+    for (int i = 0; i < last; ++i)
+    {
+        low += coeff * (data[(size_t) i] - low);
+        if (i >= start)
+        {
+            energy += (double) low * (double) low;
+            ++count;
+        }
+    }
+    return count > 0 ? (float) std::sqrt (energy / (double) count) : 0.0f;
+}
+
+void testTransformerPunch()
+{
+    const int sampleRate = 48000;
+    const int samples = (int) (0.18 * sampleRate);
+    std::vector<float> kick (samples);
+    for (int i = 0; i < samples; ++i)
+    {
+        const float t = (float) i / (float) sampleRate;
+        const float click = std::sin (2.0f * 3.14159265f * 2500.0f * t) * std::exp (-t / 0.0012f);
+        const float body = std::sin (2.0f * 3.14159265f * 50.0f * t) * std::exp (-t / 0.08f);
+        kick[(size_t) i] = 0.55f * click + 0.38f * body;
+    }
+
+    auto render = [&] (float driveDb)
+    {
+        TransformerStage transformer;
+        transformer.prepare (sampleRate, 1);
+        TransformerSettings settings;
+        settings.bypassAmount = 0.0f;
+        settings.weightDb = 3.0f;
+        settings.driveDb = driveDb;
+        auto signal = kick;
+        float* channels[] = { signal.data() };
+        transformer.processBlock (channels, 1, samples, settings);
+        return signal;
+    };
+
+    const auto clean = render (0.0f);
+    const auto driven = render (12.0f);
+    const int attack = std::max (1, (int) (0.002 * sampleRate));
+
+    float cleanPeak = 0.0f;
+    float drivenPeak = 0.0f;
+    for (int i = 0; i < attack; ++i)
+    {
+        cleanPeak = std::max (cleanPeak, std::abs (clean[(size_t) i]));
+        drivenPeak = std::max (drivenPeak, std::abs (driven[(size_t) i]));
+    }
+    const double attackDb = 20.0 * std::log10 ((double) drivenPeak / (double) cleanPeak);
+    std::printf ("Transformer kick attack %.3f dB\n", attackDb);
+    // Drive is the output level. The click should follow it, and not pick up the low punch.
+    EXPECT (std::abs (attackDb - 12.0) < 1.0);
+
+    const float match = cleanPeak / std::max (drivenPeak, 1.0e-6f);
+    std::vector<float> matched (samples);
+    for (int i = 0; i < samples; ++i)
+        matched[(size_t) i] = driven[(size_t) i] * match;
+
+    const int bodyStart = (int) (0.008 * sampleRate);
+    const int bodyEnd = (int) (0.10 * sampleRate);
+    const float cleanLow = lowBandRms (clean, sampleRate, bodyStart, bodyEnd);
+    const float drivenLow = lowBandRms (matched, sampleRate, bodyStart, bodyEnd);
+    const double lowDb = 20.0 * std::log10 ((double) drivenLow / (double) cleanLow);
+    std::printf ("Transformer kick low band %.3f dB\n", lowDb);
+    EXPECT (lowDb > 2.0);
+}
+
+void testFluxColour()
+{
+    auto render = [] (int mode, float frequency)
+    {
+        const int sampleRate = 48000;
+        const int samples = (int) (0.25 * sampleRate);
+        FluxStage flux;
+        flux.prepare (sampleRate, 1);
+        FluxSettings settings;
+        settings.mode = mode;
+        settings.intensity = 1.0f;
+        settings.driveDb = 0.0f;
+        std::vector<float> signal (samples);
+        for (int i = 0; i < samples; ++i)
+            signal[(size_t) i] = 0.25f * std::sin (2.0f * 3.14159265f * frequency * (float) i / (float) sampleRate);
+        float* channels[] = { signal.data() };
+        flux.processBlock (channels, 1, samples, settings);
+        return signal;
+    };
+
+    const int sampleRate = 48000;
+    const int settle = (int) (0.12 * sampleRate);
+    const auto nickelTop = render (0, 6000.0f);
+    const auto ironTop = render (2, 6000.0f);
+    const double topDb = 20.0 * std::log10 (rmsOf (ironTop, settle) / rmsOf (nickelTop, settle));
+    std::printf ("Flux iron vs nickel at 6 kHz %.3f dB\n", topDb);
+    EXPECT (topDb < -0.6);
+
+    const auto nickelLow = render (0, 120.0f);
+    const auto ironLow = render (2, 120.0f);
+    const double nickelDistortion = harmonicShare (nickelLow, 0.25f, 120.0f, sampleRate, settle);
+    const double ironDistortion = harmonicShare (ironLow, 0.25f, 120.0f, sampleRate, settle);
+    std::printf ("Flux low-mid distortion  nickel=%.4f iron=%.4f\n", nickelDistortion, ironDistortion);
+    EXPECT (nickelDistortion < 0.005);
+    EXPECT (ironDistortion > 0.02);
+}
+
 void processAll (SoundSaturatorAudioProcessor& processor, juce::AudioBuffer<float>& buffer)
 {
     juce::MidiBuffer midi;
@@ -924,9 +1037,11 @@ int main()
     testSidechainHpf();
     testFluxIdentity();
     testFluxWidths();
+    testFluxColour();
     testTapeState();
     testTapeLevel();
     testTransformer();
+    testTransformerPunch();
     testFactoryPresets();
     testChainOrder();
     testUiZoom();
